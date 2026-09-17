@@ -94,5 +94,5 @@ export const INITIAL_PROJECTS = [
 
 export const TARGET_BUS_STOPS = [
   { id: '488', name: 'Pctcan (UNEATLANTICO)', linesHint: 'L1, L24C1, L24C2' },
-  { id: '487', name: 'Pctcan 3 (Lluja)', linesHint: 'L13, L14' }
+  { id: '454', name: 'Pctcan 1', linesHint: 'L1, L13, L24C1' }
 ];

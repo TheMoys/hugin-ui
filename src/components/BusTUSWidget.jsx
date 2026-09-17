@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bus, Clock, RefreshCw, MapPin, Navigation, CheckCircle2 } from 'lucide-react';
+import { Bus, Clock, MapPin } from 'lucide-react';
 
 export default function BusTUSWidget() {
   const [stopData, setStopData] = useState({
@@ -32,7 +32,6 @@ export default function BusTUSWidget() {
       const data = await response.json();
       const items = data.resources || [];
 
-      // Filter specifically for stop 488 and stop 487
       const stop488Items = items.filter(i => String(i['ayto:paradaId']) === '488');
       const stop487Items = items.filter(i => String(i['ayto:paradaId']) === '487');
 
@@ -59,7 +58,6 @@ export default function BusTUSWidget() {
       });
       setLastUpdated(new Date());
     } catch (err) {
-      // Dynamic fallback tick
       setStopData(prev => ({
         '488': prev['488'].map(item => ({
           ...item,
@@ -78,7 +76,7 @@ export default function BusTUSWidget() {
 
   useEffect(() => {
     fetchTUSData();
-    const timer = setInterval(fetchTUSData, 30000); // 30s auto-update for TV display
+    const timer = setInterval(fetchTUSData, 30000);
     return () => clearInterval(timer);
   }, []);
 
@@ -93,103 +91,105 @@ export default function BusTUSWidget() {
   };
 
   return (
-    <div className="cork-card bg-ticket" style={{ transform: 'rotate(-0.8deg)', padding: '24px' }}>
+    <div className="cork-card bg-ticket" style={{ transform: 'rotate(-0.8deg)', padding: '32px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
       {/* Pushpin */}
       <div className="pushpin">
         <div className="pushpin-head pushpin-blue"></div>
       </div>
 
-      <div className="bus-ticket-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ background: '#3b82f6', padding: '10px', borderRadius: '10px', color: '#fff' }}>
-            <Bus size={26} />
+      <div>
+        <div className="bus-ticket-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div style={{ background: '#3b82f6', padding: '12px', borderRadius: '12px', color: '#fff' }}>
+              <Bus size={32} />
+            </div>
+            <div>
+              <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
+                TUS Santander Bus Monitor
+              </h3>
+              <span style={{ fontSize: '1.05rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                <MapPin size={16} color="#38bdf8" /> Paradas PCTCAN 488 y 487
+              </span>
+            </div>
           </div>
-          <div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#f8fafc', margin: 0 }}>
-              TUS Santander Bus Monitor
-            </h3>
-            <span style={{ fontSize: '0.825rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <MapPin size={14} color="#38bdf8" /> Paradas PCTCAN 488 y 487
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className="bus-live-pulse"></div>
+            <span style={{ fontSize: '0.95rem', fontWeight: 800, color: '#34d399', letterSpacing: '0.05em' }}>
+              EN VIVO
             </span>
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div className="bus-live-pulse"></div>
-          <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#34d399', letterSpacing: '0.05em' }}>
-            EN VIVO
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem', color: '#94a3b8', marginBottom: '20px' }}>
+          <span>Actualización automática (30s)</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Clock size={16} /> {lastUpdated.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
           </span>
         </div>
-      </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '16px' }}>
-        <span>Actualización automática (30s)</span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <Clock size={14} /> {lastUpdated.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-        </span>
-      </div>
-
-      {/* PARADA 488 */}
-      <div style={{ marginBottom: '20px' }}>
-        <div style={{ background: '#0f172a', borderLeft: '4px solid #38bdf8', padding: '8px 12px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 800, color: '#e2e8f0', marginBottom: '10px', display: 'flex', justifyContent: 'space-between' }}>
-          <span>🚏 PARADA 488: Pctcan (UNEATLANTICO)</span>
-          <span style={{ color: '#38bdf8', fontSize: '0.75rem' }}>L1, L24C1, L24C2</span>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {stopData['488'].map((item, idx) => (
-            <div key={idx} className="bus-line-row">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span className={`line-badge ${getLineBadgeClass(item.line)}`}>
-                  L{item.line.replace(/^L/i, '')}
-                </span>
-                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#f1f5f9' }}>
-                  {item.destination}
-                </div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: item.nextMinutes <= 3 ? '#ef4444' : '#38bdf8' }}>
-                  {item.nextMinutes} <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>min</span>
-                </div>
-                {item.secondMinutes && (
-                  <span style={{ fontSize: '0.725rem', color: '#64748b' }}>
-                    Sig: {item.secondMinutes} min
+        {/* PARADA 488 */}
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ background: '#030712', borderLeft: '6px solid #38bdf8', padding: '12px 16px', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 800, color: '#f1f5f9', marginBottom: '12px', display: 'flex', justifyContent: 'space-between' }}>
+            <span>🚏 PARADA 488: Pctcan (UNEATLANTICO)</span>
+            <span style={{ color: '#38bdf8', fontSize: '0.95rem', fontFamily: 'var(--font-mono)' }}>L1, L24C1, L24C2</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {stopData['488'].map((item, idx) => (
+              <div key={idx} className="bus-line-row">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <span className={`line-badge ${getLineBadgeClass(item.line)}`}>
+                    L{item.line.replace(/^L/i, '')}
                   </span>
-                )}
+                  <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#f8fafc' }}>
+                    {item.destination}
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 800, color: item.nextMinutes <= 3 ? '#ef4444' : '#38bdf8' }}>
+                    {item.nextMinutes} <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>min</span>
+                  </div>
+                  {item.secondMinutes && (
+                    <span style={{ fontSize: '0.85rem', color: '#94a3b8', fontWeight: 600 }}>
+                      Sig: {item.secondMinutes} min
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* PARADA 487 */}
-      <div>
-        <div style={{ background: '#0f172a', borderLeft: '4px solid #a855f7', padding: '8px 12px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 800, color: '#e2e8f0', marginBottom: '10px', display: 'flex', justifyContent: 'space-between' }}>
-          <span>🚏 PARADA 487: Pctcan 3 (Lluja)</span>
-          <span style={{ color: '#c084fc', fontSize: '0.75rem' }}>L13, L14</span>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {stopData['487'].map((item, idx) => (
-            <div key={idx} className="bus-line-row">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span className={`line-badge ${getLineBadgeClass(item.line)}`}>
-                  L{item.line.replace(/^L/i, '')}
-                </span>
-                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#f1f5f9' }}>
-                  {item.destination}
-                </div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: item.nextMinutes <= 3 ? '#ef4444' : '#c084fc' }}>
-                  {item.nextMinutes} <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>min</span>
-                </div>
-                {item.secondMinutes && (
-                  <span style={{ fontSize: '0.725rem', color: '#64748b' }}>
-                    Sig: {item.secondMinutes} min
+        {/* PARADA 487 */}
+        <div>
+          <div style={{ background: '#030712', borderLeft: '6px solid #a855f7', padding: '12px 16px', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 800, color: '#f1f5f9', marginBottom: '12px', display: 'flex', justifyContent: 'space-between' }}>
+            <span>🚏 PARADA 454: Pctcan 1</span>
+            <span style={{ color: '#c084fc', fontSize: '0.95rem', fontFamily: 'var(--font-mono)' }}>L1, L13, L24C1</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {stopData['487'].map((item, idx) => (
+              <div key={idx} className="bus-line-row">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <span className={`line-badge ${getLineBadgeClass(item.line)}`}>
+                    L{item.line.replace(/^L/i, '')}
                   </span>
-                )}
+                  <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#f8fafc' }}>
+                    {item.destination}
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 800, color: item.nextMinutes <= 3 ? '#ef4444' : '#c084fc' }}>
+                    {item.nextMinutes} <span style={{ fontSize: '0.9rem', fontWeight: 700 }}>min</span>
+                  </div>
+                  {item.secondMinutes && (
+                    <span style={{ fontSize: '0.85rem', color: '#94a3b8', fontWeight: 600 }}>
+                      Sig: {item.secondMinutes} min
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
