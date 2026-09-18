@@ -1,0 +1,9 @@
+services:
+  hugin-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hugin-ui
+    ports:
+      - "8080:80"
+    restart: always
