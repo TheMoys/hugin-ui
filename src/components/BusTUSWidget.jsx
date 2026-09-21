@@ -163,7 +163,7 @@ export default function BusTUSWidget() {
         {/* PARADA 487 */}
         <div>
           <div style={{ background: '#030712', borderLeft: '6px solid #a855f7', padding: '12px 16px', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 800, color: '#f1f5f9', marginBottom: '12px', display: 'flex', justifyContent: 'space-between' }}>
-            <span>🚏 PARADA 454: Pctcan 1</span>
+            <span>🚏 PARADA 487: Pctcan 1</span>
             <span style={{ color: '#c084fc', fontSize: '0.95rem', fontFamily: 'var(--font-mono)' }}>L1, L13, L24C1</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
