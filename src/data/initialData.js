@@ -1,92 +1,88 @@
-// Calculate next Friday at 14:00:00 CEST
-const getNextSprintFriday = () => {
-  const now = new Date();
-  // Target Friday 14:00 (Tomorrow, Sept 18 2026)
-  const target = new Date(now);
-  target.setDate(now.getDate() + 1); // Tomorrow Friday
-  target.setHours(14, 0, 0, 0);
+// Calculate next Sprint Planning / Review (Wednesday, Sept 30 2026 at 16:00:00)
+const getNextSprintReview = () => {
+  const target = new Date('2026-09-30T16:00:00');
   return target.toISOString();
 };
 
 export const INITIAL_REVIEW = {
   id: 'review-1',
-  title: 'Próximo Sprint Review - Fénix',
-  targetDate: getNextSprintFriday(),
-  scheduleText: 'Todos los viernes cada 2 semanas a las 14:00',
+  title: 'Próximo Sprint Planning / Review',
+  targetDate: getNextSprintReview(),
+  scheduleText: 'Los miércoles cada 2 semanas a las 16:00',
   location: 'Sala de Reuniones Fénix / Pantalla Principal'
 };
 
 export const INITIAL_SPRINT_GOAL = {
   id: 'sprint-goal-1',
-  code: 'SPRINT-24',
+  code: 'SPRINT-ACTUAL',
   title: '🎯 Objetivo del Sprint',
-  description: 'Despliegue de la versión inicial de Hugin-UI para proyección en pantalla con información de proyectos y monitoreo TUS Santander en directo para las paradas 488 y 487 del PCTCAN.',
+  description: 'Lanzar una primera aproximación del proyecto MAHINE y actualizar la base de datos de NUTRIX nuevo para incluir diferentes fuentes de alimentos.',
 };
 
 export const INITIAL_PROJECTS = [
   {
     id: 'proj-1',
-    code: 'HUGIN-UI',
-    title: 'Hugin-UI Dashboard',
-    version: 'v1.4.0',
+    code: 'NUTRIX',
+    title: 'NUTRIX',
+    version: 'v1.1.0',
     status: 'en_progreso',
-    lastUpdate: '16 Sep 2026',
-    nextDeploy: '18 Sep 2026 (Mañana)',
-    color: 'yellow',
+    lastUpdate: '31/06/2026',
+    nextDeploy: '02/10/2026',
+    color: 'mint',
     rotation: -1.5,
   },
   {
     id: 'proj-2',
-    code: 'FENIX-CORE',
-    title: 'Fénix Core API',
-    version: 'v2.1.0-rc2',
+    code: 'MLS',
+    title: 'MLS',
+    version: 'OJS 3.4',
     status: 'en_progreso',
-    lastUpdate: '15 Sep 2026',
-    nextDeploy: '25 Sep 2026',
-    color: 'mint',
+    lastUpdate: '06/2025',
+    nextDeploy: '12/2026',
+    color: 'blue',
     rotation: 1.2,
   },
   {
     id: 'proj-3',
-    code: 'TUS-BOT',
-    title: 'Bot TUS Santander Alerts',
-    version: 'v1.0.4',
-    status: 'completado',
-    lastUpdate: '14 Sep 2026',
-    nextDeploy: '20 Sep 2026',
-    color: 'blue',
+    code: 'NUTRIX-LEG',
+    title: 'Nutrix Legacy',
+    version: 'BD Sync',
+    status: 'en_progreso',
+    lastUpdate: '03/09/2026 (BD)',
+    nextDeploy: 'Por definir (BD)',
+    color: 'amber',
     rotation: -2.0,
   },
   {
     id: 'proj-4',
-    code: 'GIS-PCTCAN',
-    title: 'Mapeo GIS PCTCAN',
-    version: 'v0.8.5',
-    status: 'bloqueado',
-    lastUpdate: '10 Sep 2026',
-    nextDeploy: '02 Oct 2026',
-    color: 'pink',
+    code: 'RESID-LEG',
+    title: 'Residencia Legacy',
+    version: 'v1.5.126',
+    status: 'soporte',
+    lastUpdate: 'Soporte activo',
+    nextDeploy: 'Solamente soporte',
+    color: 'yellow',
     rotation: 1.8,
   },
   {
     id: 'proj-5',
-    code: 'CT-METRICS',
-    title: 'CT Metrics Engine',
-    version: 'v0.9.0',
-    status: 'planificado',
-    lastUpdate: '12 Sep 2026',
-    nextDeploy: '09 Oct 2026',
-    color: 'amber',
+    code: 'RESID-NUEVO',
+    title: 'Residencia Nuevo',
+    version: 'Entregable 5',
+    status: 'en_progreso',
+    lastUpdate: 'Entregable 5',
+    nextDeploy: '10/2026 (Tentativo)',
+    color: 'pink',
     rotation: -1.0,
   },
   {
     id: 'proj-6',
-    code: 'AUTH-NOTIF',
-    title: 'Servicio Notificaciones Telegram',
-    version: 'v1.2.1',
-    status: 'completado',
-    lastUpdate: '08 Sep 2026',
-    nextDeploy: '15 Oct 2026',
+    code: 'MAHINE',
+    title: 'MAHINE',
+    version: 'v0.1.0 (Dev)',
+    status: 'en_desarrollo',
+    lastUpdate: 'En desarrollo...',
+    nextDeploy: '30/09/2026 (Tentativo)',
     color: 'mint',
     rotation: 2.2,
   }

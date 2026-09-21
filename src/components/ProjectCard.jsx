@@ -16,6 +16,10 @@ export default function ProjectCard({ project }) {
     switch (status) {
       case 'en_progreso':
         return { label: 'En Progreso 🟢', className: 'badge-en_progreso' };
+      case 'en_desarrollo':
+        return { label: 'En Desarrollo 🚀', className: 'badge-en_progreso' };
+      case 'soporte':
+        return { label: 'Solo Soporte 🛠️', className: 'badge-en_revision' };
       case 'en_revision':
         return { label: 'En Revisión 🟡', className: 'badge-en_revision' };
       case 'completado':

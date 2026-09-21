@@ -58,7 +58,7 @@ export default function FenixPlanning() {
           {/* Countdown Box */}
           <div style={{ background: '#78350f', color: '#fff', padding: '22px 24px', borderRadius: '16px', margin: '14px 0', boxShadow: '0 8px 20px rgba(0,0,0,0.3)' }}>
             <div style={{ fontSize: '0.9rem', color: '#fef3c7', textTransform: 'uppercase', fontWeight: 800, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Clock size={18} color="#f59e0b" /> TIEMPO RESTANTE (VIERNES 14:00 CADA 2 SEMANAS)
+              <Clock size={18} color="#f59e0b" /> TIEMPO RESTANTE ({review.scheduleText ? review.scheduleText.toUpperCase() : 'MIÉRCOLES 16:00 CADA 2 SEMANAS'})
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', textAlign: 'center', fontFamily: 'var(--font-mono)' }}>
               <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px 8px', borderRadius: '10px' }}>
