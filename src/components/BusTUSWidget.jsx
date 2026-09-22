@@ -4,13 +4,11 @@ import { Bus, Clock, MapPin, Wifi } from 'lucide-react';
 export default function BusTUSWidget() {
   const [stopData, setStopData] = useState({
     '488': [
-      { line: '1', destination: 'VALDENOJA / PCTCAN', nextMinutes: 4, secondMinutes: 14, distanceMeter: 850 },
-      { line: '24C1', destination: 'CIRCULAR SAN MARTÍN', nextMinutes: 7, secondMinutes: 22, distanceMeter: 1420 },
-      { line: '24C2', destination: 'CIRCULAR SAN MARTÍN', nextMinutes: 11, secondMinutes: 28, distanceMeter: 2300 }
+      { line: '1', destination: 'VALDENOJA / PCTCAN', nextMinutes: 4, secondMinutes: 14, distanceMeter: 850 }
     ],
     '487': [
-      { line: '13', destination: 'LLUJA / PCTCAN 3', nextMinutes: 8, secondMinutes: 24, distanceMeter: 1650 },
-      { line: '14', destination: 'ESTACIONES / PCTCAN 3', nextMinutes: 15, secondMinutes: 32, distanceMeter: 3100 }
+      { line: '1', destination: 'VALDENOJA / PCTCAN', nextMinutes: 6, secondMinutes: 18, distanceMeter: 1200 },
+      { line: '13', destination: 'LLUJA / PCTCAN 3', nextMinutes: 8, secondMinutes: 24, distanceMeter: 1650 }
     ]
   });
   const [loading, setLoading] = useState(false);
@@ -32,8 +30,19 @@ export default function BusTUSWidget() {
       const data = await response.json();
       const items = data.resources || [];
 
-      const stop488Items = items.filter(i => String(i['ayto:paradaId']) === '488');
-      const stop487Items = items.filter(i => String(i['ayto:paradaId']) === '487');
+      // Filter stop 488: ONLY Line 1
+      const stop488Items = items.filter(i => {
+        const paradaId = String(i['ayto:paradaId']);
+        const linea = String(i['ayto:etiqLinea'] || '').replace(/^L/i, '').trim();
+        return paradaId === '488' && linea === '1';
+      });
+
+      // Filter stop 487: ONLY Line 1 & Line 13
+      const stop487Items = items.filter(i => {
+        const paradaId = String(i['ayto:paradaId']);
+        const linea = String(i['ayto:etiqLinea'] || '').replace(/^L/i, '').trim();
+        return paradaId === '487' && (linea === '1' || linea === '13');
+      });
 
       const mapItems = (list, defaultLines) => {
         if (list.length === 0) return defaultLines;
@@ -43,7 +52,7 @@ export default function BusTUSWidget() {
           const mins1 = Math.max(1, Math.round(t1 / 60));
           const mins2 = Math.max(1, Math.round(t2 / 60));
           return {
-            line: item['ayto:etiqLinea'] || 'L1',
+            line: String(item['ayto:etiqLinea'] || '1').replace(/^L/i, ''),
             destination: item['ayto:destino1'] || 'PCTCAN',
             nextMinutes: mins1,
             secondMinutes: mins2 > 0 ? mins2 : null,
@@ -83,10 +92,7 @@ export default function BusTUSWidget() {
   const getLineBadgeClass = (line) => {
     const clean = line.trim().toUpperCase();
     if (clean === '1') return 'line-l1';
-    if (clean === '24C1') return 'line-l24c1';
-    if (clean === '24C2') return 'line-l24c2';
     if (clean === '13') return 'line-l13';
-    if (clean === '14') return 'line-l14';
     return 'line-default';
   };
 
@@ -131,7 +137,7 @@ export default function BusTUSWidget() {
         <div style={{ marginBottom: '20px' }}>
           <div style={{ background: 'var(--bg-inner)', borderLeft: '3px solid var(--orange-primary)', padding: '10px 16px', borderRadius: '10px', fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span>🚏 PARADA 488: Pctcan (UNEATLANTICO)</span>
-            <span style={{ color: 'var(--orange-primary)', fontSize: '0.85rem', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>L1 • L24C1 • L24C2</span>
+            <span style={{ color: 'var(--orange-primary)', fontSize: '0.85rem', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>L1</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {stopData['488'].map((item, idx) => (
@@ -163,7 +169,7 @@ export default function BusTUSWidget() {
         <div>
           <div style={{ background: 'var(--bg-inner)', borderLeft: '3px solid #f97316', padding: '10px 16px', borderRadius: '10px', fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span>🚏 PARADA 487: Pctcan 1</span>
-            <span style={{ color: 'var(--orange-primary)', fontSize: '0.85rem', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>L1 • L13 • L14</span>
+            <span style={{ color: 'var(--orange-primary)', fontSize: '0.85rem', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>L1 • L13</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {stopData['487'].map((item, idx) => (
@@ -194,6 +200,7 @@ export default function BusTUSWidget() {
     </div>
   );
 }
+
 
 
 
