@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Pin, Sparkles } from 'lucide-react';
+import { X, PlusCircle, Check } from 'lucide-react';
 
 export default function AddNoteModal({ isOpen, onClose, onAddProject }) {
   const [code, setCode] = useState('');
@@ -7,7 +7,6 @@ export default function AddNoteModal({ isOpen, onClose, onAddProject }) {
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('alta');
   const [status, setStatus] = useState('en_progreso');
-  const [color, setColor] = useState('yellow');
   const [lead, setLead] = useState('Diego Moys');
   const [tagsInput, setTagsInput] = useState('');
   const [blockerReason, setBlockerReason] = useState('');
@@ -20,20 +19,20 @@ export default function AddNoteModal({ isOpen, onClose, onAddProject }) {
 
     const newProject = {
       id: `proj-${Date.now()}`,
-      code: code.trim().toUpperCase() || 'FENIX-NOTE',
+      code: code.trim().toUpperCase() || 'SYS-PROJ',
       title: title.trim(),
       description: description.trim(),
       status,
       priority,
       progress: status === 'completado' ? 100 : status === 'planificado' ? 0 : 40,
       dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      color,
-      rotation: (Math.random() * 4 - 2).toFixed(1),
       lead: lead.trim() || 'Equipo Fénix',
       team: [lead.trim() || 'Equipo Fénix'],
       tags: tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(Boolean) : ['Hugin', 'Fénix'],
       blockerReason: status === 'bloqueado' ? blockerReason : '',
-      tasksCount: { done: 1, total: 4 }
+      version: 'v1.0.0',
+      lastUpdate: new Date().toLocaleDateString('es-ES'),
+      nextDeploy: 'Por definir'
     };
 
     onAddProject(newProject);
@@ -51,18 +50,18 @@ export default function AddNoteModal({ isOpen, onClose, onAddProject }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '2px solid #5a381d', paddingBottom: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '14px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Pin size={24} color="#d97706" />
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff8f0' }}>
-              Fijar Nueva Nota en la Pizarra
+            <PlusCircle size={22} color="#6366f1" />
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+              Registrar Nuevo Proyecto en Panel
             </h3>
           </div>
           <button
             onClick={onClose}
-            style={{ background: 'transparent', border: 'none', color: '#d1b89d', cursor: 'pointer', padding: '4px' }}
+            style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '4px' }}
           >
-            <X size={22} />
+            <X size={20} />
           </button>
         </div>
 
@@ -70,116 +69,101 @@ export default function AddNoteModal({ isOpen, onClose, onAddProject }) {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '12px' }}>
             <div>
-              <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fef3c7', display: 'block', marginBottom: '4px' }}>Código</label>
+              <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Código *</label>
               <input
                 type="text"
                 placeholder="ej: FENIX-UI"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid #5a381d', background: '#1c1917', color: '#fff', fontSize: '0.85rem' }}
+                style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: '#0b0f19', color: '#fff', fontSize: '0.85rem' }}
               />
             </div>
             <div>
-              <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fef3c7', display: 'block', marginBottom: '4px' }}>Título *</label>
+              <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Nombre del Proyecto *</label>
               <input
                 type="text"
                 required
-                placeholder="Título del proyecto o nota..."
+                placeholder="Título del proyecto..."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid #5a381d', background: '#1c1917', color: '#fff', fontSize: '0.85rem' }}
+                style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: '#0b0f19', color: '#fff', fontSize: '0.85rem' }}
               />
             </div>
           </div>
 
           <div>
-            <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fef3c7', display: 'block', marginBottom: '4px' }}>Descripción</label>
+            <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Descripción</label>
             <textarea
               rows={3}
-              placeholder="Escribe los detalles clave del proyecto o tarea..."
+              placeholder="Detalles clave del proyecto..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid #5a381d', background: '#1c1917', color: '#fff', fontSize: '0.85rem', resize: 'vertical' }}
+              style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: '#0b0f19', color: '#fff', fontSize: '0.85rem', resize: 'vertical' }}
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
-              <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fef3c7', display: 'block', marginBottom: '4px' }}>Estado</label>
+              <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Estado</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #5a381d', background: '#1c1917', color: '#fff', fontSize: '0.8rem' }}
+                style={{ width: '100%', padding: '9px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: '#0b0f19', color: '#fff', fontSize: '0.82rem' }}
               >
-                <option value="en_progreso">En Progreso 🟢</option>
-                <option value="en_revision">En Revisión 🟡</option>
-                <option value="completado">Completado 🔵</option>
-                <option value="bloqueado">Bloqueado 🔴</option>
-                <option value="planificado">Planificado 🟣</option>
+                <option value="en_progreso">En Progreso</option>
+                <option value="en_revision">En Revisión</option>
+                <option value="completado">Completado</option>
+                <option value="bloqueado">Bloqueado</option>
+                <option value="planificado">Planificado</option>
               </select>
             </div>
 
             <div>
-              <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fef3c7', display: 'block', marginBottom: '4px' }}>Prioridad</label>
+              <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Prioridad</label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #5a381d', background: '#1c1917', color: '#fff', fontSize: '0.8rem' }}
+                style={{ width: '100%', padding: '9px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: '#0b0f19', color: '#fff', fontSize: '0.82rem' }}
               >
                 <option value="alta">Alta</option>
                 <option value="media">Media</option>
                 <option value="baja">Baja</option>
               </select>
             </div>
-
-            <div>
-              <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fef3c7', display: 'block', marginBottom: '4px' }}>Color Nota</label>
-              <select
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #5a381d', background: '#1c1917', color: '#fff', fontSize: '0.8rem' }}
-              >
-                <option value="yellow">Canario 🟡</option>
-                <option value="mint">Menta 🟢</option>
-                <option value="blue">Cielo 🔵</option>
-                <option value="pink">Rosa 🌸</option>
-                <option value="amber">Ámbar 🟠</option>
-              </select>
-            </div>
           </div>
 
           {status === 'bloqueado' && (
             <div>
-              <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fca5a5', display: 'block', marginBottom: '4px' }}>Motivo del Bloqueo</label>
+              <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#fb7185', display: 'block', marginBottom: '4px' }}>Motivo del Bloqueo</label>
               <input
                 type="text"
-                placeholder="Explicación breve del impedimento..."
+                placeholder="Explicación del impedimento..."
                 value={blockerReason}
                 onChange={(e) => setBlockerReason(e.target.value)}
-                style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid #ef4444', background: '#1c1917', color: '#fff', fontSize: '0.85rem' }}
+                style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid #f43f5e', background: '#0b0f19', color: '#fff', fontSize: '0.85rem' }}
               />
             </div>
           )}
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
-              <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fef3c7', display: 'block', marginBottom: '4px' }}>Responsable</label>
+              <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Responsable</label>
               <input
                 type="text"
                 placeholder="ej: Diego Moys"
                 value={lead}
                 onChange={(e) => setLead(e.target.value)}
-                style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid #5a381d', background: '#1c1917', color: '#fff', fontSize: '0.85rem' }}
+                style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: '#0b0f19', color: '#fff', fontSize: '0.85rem' }}
               />
             </div>
             <div>
-              <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#fef3c7', display: 'block', marginBottom: '4px' }}>Etiquetas (separadas por coma)</label>
+              <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Etiquetas</label>
               <input
                 type="text"
                 placeholder="React, OpenData, GIS"
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
-                style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid #5a381d', background: '#1c1917', color: '#fff', fontSize: '0.85rem' }}
+                style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: '#0b0f19', color: '#fff', fontSize: '0.85rem' }}
               />
             </div>
           </div>
@@ -189,25 +173,26 @@ export default function AddNoteModal({ isOpen, onClose, onAddProject }) {
             type="submit"
             style={{
               marginTop: '10px',
-              background: 'linear-gradient(135deg, #d97706, #b45309)',
+              background: 'linear-gradient(135deg, #6366f1, #4f46e5)',
               color: '#ffffff',
               border: 'none',
               padding: '12px',
-              borderRadius: '8px',
-              fontWeight: 800,
-              fontSize: '0.95rem',
+              borderRadius: '10px',
+              fontWeight: 700,
+              fontSize: '0.9rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
-              boxShadow: '0 4px 10px rgba(0,0,0,0.3)'
+              boxShadow: '0 4px 14px rgba(99, 102, 241, 0.4)'
             }}
           >
-            <Sparkles size={18} /> Pin a la Pizarra de Corcho
+            <Check size={18} /> Guardar Proyecto
           </button>
         </form>
       </div>
     </div>
   );
 }
+

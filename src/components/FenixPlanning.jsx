@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Target, Clock, Flame } from 'lucide-react';
+import { Calendar, Target, Clock, MapPin, Flag } from 'lucide-react';
 import BusTUSWidget from './BusTUSWidget';
 import { INITIAL_REVIEW, INITIAL_SPRINT_GOAL } from '../data/initialData';
 
@@ -32,82 +32,85 @@ export default function FenixPlanning() {
   return (
     <div className="fenix-grid">
       {/* LEFT COLUMN: Recordatorio Review & Objetivo del Sprint */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', height: '100%', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', height: '100%' }}>
         
         {/* Card 1: Próximo Review */}
-        <div className="cork-card bg-amber" style={{ transform: 'rotate(-1.2deg)', padding: '32px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div className="pushpin">
-            <div className="pushpin-head pushpin-red"></div>
-          </div>
-          <div className="washi-tape"></div>
+        <div className="dash-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderLeft: '4px solid #6366f1' }}>
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
+              <div>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#818cf8', letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Calendar size={14} /> REVISIÓN DE SPRINT & PLANIFICACIÓN
+                </span>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
+                  {review.title}
+                </h3>
+              </div>
+              <div style={{ background: 'rgba(99, 102, 241, 0.15)', border: '1px solid rgba(99, 102, 241, 0.3)', padding: '10px', borderRadius: '12px', color: '#818cf8' }}>
+                <Clock size={24} />
+              </div>
+            </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-            <div>
-              <span style={{ fontSize: '0.95rem', fontWeight: 800, textTransform: 'uppercase', color: '#b45309', letterSpacing: '0.06em' }}>
-                RECORDATORIO DE SPRINT REVIEW
-              </span>
-              <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#451a03', marginTop: '6px' }}>
-                {review.title}
-              </h3>
-            </div>
-            <div style={{ background: 'rgba(217, 119, 6, 0.2)', padding: '12px', borderRadius: '14px' }}>
-              <Calendar size={32} color="#b45309" />
-            </div>
-          </div>
+            {/* Countdown Box */}
+            <div style={{ background: '#0b0f19', border: '1px solid rgba(255, 255, 255, 0.08)', padding: '18px 20px', borderRadius: '14px', margin: '14px 0' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: '10px', display: 'flex', alignItems: 'center', justifyBetween: 'space-between', width: '100%' }}>
+                <span>TIEMPO RESTANTE</span>
+                <span style={{ color: '#818cf8', marginLeft: 'auto', fontFamily: 'var(--font-mono)' }}>{review.scheduleText}</span>
+              </div>
 
-          {/* Countdown Box */}
-          <div style={{ background: '#78350f', color: '#fff', padding: '22px 24px', borderRadius: '16px', margin: '14px 0', boxShadow: '0 8px 20px rgba(0,0,0,0.3)' }}>
-            <div style={{ fontSize: '0.9rem', color: '#fef3c7', textTransform: 'uppercase', fontWeight: 800, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Clock size={18} color="#f59e0b" /> TIEMPO RESTANTE ({review.scheduleText ? review.scheduleText.toUpperCase() : 'MIÉRCOLES 16:00 CADA 2 SEMANAS'})
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', textAlign: 'center', fontFamily: 'var(--font-mono)' }}>
-              <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px 8px', borderRadius: '10px' }}>
-                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#fef3c7', lineHeight: 1 }}>{timeLeft.days}</div>
-                <div style={{ fontSize: '0.8rem', color: '#fcd34d', fontWeight: 800, marginTop: '4px' }}>DÍAS</div>
-              </div>
-              <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px 8px', borderRadius: '10px' }}>
-                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#fef3c7', lineHeight: 1 }}>{timeLeft.hours}</div>
-                <div style={{ fontSize: '0.8rem', color: '#fcd34d', fontWeight: 800, marginTop: '4px' }}>HORAS</div>
-              </div>
-              <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px 8px', borderRadius: '10px' }}>
-                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#fef3c7', lineHeight: 1 }}>{timeLeft.minutes}</div>
-                <div style={{ fontSize: '0.8rem', color: '#fcd34d', fontWeight: 800, marginTop: '4px' }}>MINS</div>
-              </div>
-              <div style={{ background: 'rgba(0,0,0,0.4)', padding: '12px 8px', borderRadius: '10px' }}>
-                <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#ef4444', lineHeight: 1 }}>{timeLeft.seconds}</div>
-                <div style={{ fontSize: '0.8rem', color: '#fca5a5', fontWeight: 800, marginTop: '4px' }}>SEGS</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', textAlign: 'center', fontFamily: 'var(--font-mono)' }}>
+                <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)', padding: '10px 6px', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#f8fafc', lineHeight: 1 }}>{timeLeft.days}</div>
+                  <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700, marginTop: '4px' }}>DÍAS</div>
+                </div>
+                <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)', padding: '10px 6px', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#f8fafc', lineHeight: 1 }}>{timeLeft.hours}</div>
+                  <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700, marginTop: '4px' }}>HORAS</div>
+                </div>
+                <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)', padding: '10px 6px', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#f8fafc', lineHeight: 1 }}>{timeLeft.minutes}</div>
+                  <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700, marginTop: '4px' }}>MINS</div>
+                </div>
+                <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(99, 102, 241, 0.2)', padding: '10px 6px', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#818cf8', lineHeight: 1 }}>{timeLeft.seconds}</div>
+                  <div style={{ fontSize: '0.7rem', color: '#818cf8', fontWeight: 700, marginTop: '4px' }}>SEGS</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div style={{ background: 'rgba(255, 255, 255, 0.55)', padding: '14px 18px', borderRadius: '12px', fontSize: '1.05rem', color: '#78350f', fontWeight: 800 }}>
-            📍 {review.location}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)', padding: '10px 14px', borderRadius: '10px', fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
+            <MapPin size={16} color="#38bdf8" />
+            <span><strong>Ubicación:</strong> {review.location}</span>
           </div>
         </div>
 
         {/* Card 2: Objetivo del Sprint */}
-        <div className="cork-card bg-yellow" style={{ transform: 'rotate(1.4deg)', padding: '32px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div className="pushpin">
-            <div className="pushpin-head pushpin-brass"></div>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
-            <div>
-              <span className="handwritten" style={{ fontSize: '1.8rem', fontWeight: 700, color: '#854d0e' }}>
+        <div className="dash-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderLeft: '4px solid #06b6d4' }}>
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+              <div>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#22d3ee', letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Flag size={14} /> INICIATIVA CLAVE DEL EQUIPO
+                </span>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
+                  {sprintGoal.title}
+                </h3>
+              </div>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', background: 'rgba(6, 182, 212, 0.15)', color: '#22d3ee', padding: '4px 10px', borderRadius: '6px', border: '1px solid rgba(6, 182, 212, 0.3)', fontWeight: 700 }}>
                 {sprintGoal.code}
               </span>
-              <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#713f12', marginTop: '2px' }}>
-                {sprintGoal.title}
-              </h3>
             </div>
-            <div style={{ background: 'rgba(161, 98, 7, 0.2)', padding: '12px', borderRadius: '14px' }}>
-              <Target size={32} color="#a16207" />
-            </div>
+
+            <p style={{ fontSize: '1.02rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginTop: '8px' }}>
+              {sprintGoal.description}
+            </p>
           </div>
 
-          <p style={{ fontSize: '1.25rem', color: '#451a03', lineHeight: 1.6, fontWeight: 600 }}>
-            {sprintGoal.description}
-          </p>
+          <div style={{ background: 'rgba(6, 182, 212, 0.06)', border: '1px solid rgba(6, 182, 212, 0.15)', padding: '10px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Target size={18} color="#22d3ee" />
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Prioridad crítica para la entrega del sprint activo</span>
+          </div>
         </div>
 
       </div>
@@ -119,3 +122,4 @@ export default function FenixPlanning() {
     </div>
   );
 }
+

@@ -1,35 +1,25 @@
 import React from 'react';
-import { Calendar, Clock, GitBranch } from 'lucide-react';
+import { Calendar, Clock, GitBranch, ArrowUpRight } from 'lucide-react';
 
 export default function ProjectCard({ project }) {
-  const getPinColor = (color) => {
-    switch (color) {
-      case 'mint': return 'pushpin-green';
-      case 'blue': return 'pushpin-blue';
-      case 'pink': return 'pushpin-red';
-      case 'amber': return 'pushpin-brass';
-      default: return 'pushpin-red';
-    }
-  };
-
   const getStatusBadge = (status) => {
     switch (status) {
       case 'en_progreso':
-        return { label: 'En Progreso 🟢', className: 'badge-en_progreso' };
+        return { label: 'En Progreso', className: 'badge-en_progreso', dotClass: 'dot-green' };
       case 'en_desarrollo':
-        return { label: 'En Desarrollo 🚀', className: 'badge-en_progreso' };
+        return { label: 'En Desarrollo', className: 'badge-en_progreso', dotClass: 'dot-green' };
       case 'soporte':
-        return { label: 'Solo Soporte 🛠️', className: 'badge-en_revision' };
+        return { label: 'Mantenimiento / Soporte', className: 'badge-en_revision', dotClass: 'dot-amber' };
       case 'en_revision':
-        return { label: 'En Revisión 🟡', className: 'badge-en_revision' };
+        return { label: 'En Revisión', className: 'badge-en_revision', dotClass: 'dot-amber' };
       case 'completado':
-        return { label: 'Completado 🔵', className: 'badge-completado' };
+        return { label: 'Completado', className: 'badge-completado', dotClass: 'dot-blue' };
       case 'bloqueado':
-        return { label: 'Bloqueado 🔴', className: 'badge-bloqueado' };
+        return { label: 'Bloqueado', className: 'badge-bloqueado', dotClass: 'dot-red' };
       case 'planificado':
-        return { label: 'Planificado 🟣', className: 'badge-planificado' };
+        return { label: 'Planificado', className: 'badge-planificado', dotClass: 'dot-purple' };
       default:
-        return { label: status, className: 'badge-en_progreso' };
+        return { label: status, className: 'badge-en_progreso', dotClass: 'dot-green' };
     }
   };
 
@@ -37,60 +27,56 @@ export default function ProjectCard({ project }) {
 
   return (
     <div
-      className={`cork-card bg-${project.color || 'yellow'}`}
+      className="dash-card"
       style={{
-        transform: `rotate(${project.rotation || 0}deg)`,
-        padding: '32px',
-        minHeight: '260px',
+        padding: '24px',
+        minHeight: '230px',
         justifyContent: 'space-between',
         display: 'flex',
         flexDirection: 'column'
       }}
     >
-      {/* Pushpin */}
-      <div className="pushpin">
-        <div className={`pushpin-head ${getPinColor(project.color)}`}></div>
-      </div>
-
-      {/* Header: Code & Version */}
+      {/* Header: Code & Status */}
       <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-          <span className="handwritten" style={{ fontSize: '1.8rem', fontWeight: 700, color: '#3f3f46' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--accent-cyan)', background: 'rgba(6, 182, 212, 0.12)', border: '1px solid rgba(6, 182, 212, 0.25)', padding: '3px 10px', borderRadius: '6px', fontWeight: 700 }}>
             #{project.code}
           </span>
           <span className={`status-badge ${statusInfo.className}`}>
+            <span className={`status-dot ${statusInfo.dotClass}`}></span>
             {statusInfo.label}
           </span>
         </div>
 
-        {/* Project Name */}
-        <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#18181b', marginBottom: '12px', lineHeight: 1.25 }}>
+        {/* Project Title */}
+        <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '10px', lineHeight: 1.25, letterSpacing: '-0.01em' }}>
           {project.title}
         </h3>
 
         {/* Version Badge */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.08)', padding: '6px 14px', borderRadius: '8px', fontSize: '1.15rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: '#18181b', marginBottom: '20px' }}>
-          <GitBranch size={18} color="#374151" />
-          <span>Versión: {project.version}</span>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '4px 10px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+          <GitBranch size={14} color="#818cf8" />
+          <span>Versión {project.version}</span>
         </div>
       </div>
 
       {/* Dates Section */}
-      <div style={{ background: 'rgba(255, 255, 255, 0.65)', padding: '16px 18px', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '1.05rem', color: '#27272a' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#52525b', fontWeight: 700 }}>
-            <Clock size={18} color="#52525b" /> Última actualización:
+      <div style={{ background: '#0b0f19', border: '1px solid rgba(255, 255, 255, 0.06)', padding: '12px 14px', borderRadius: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.78rem' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)' }}>
+            <Clock size={13} /> Úl. Actualización
           </span>
-          <strong style={{ fontWeight: 800 }}>{project.lastUpdate}</strong>
+          <strong style={{ fontWeight: 600, color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>{project.lastUpdate}</strong>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '1.05rem', color: '#18181b', borderTop: '1px solid rgba(0,0,0,0.1)', paddingTop: '10px' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#15803d', fontWeight: 800 }}>
-            <Calendar size={18} color="#15803d" /> Siguiente despliegue:
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.78rem', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#34d399' }}>
+            <Calendar size={13} /> Sig. Despliegue
           </span>
-          <strong style={{ fontWeight: 800, color: '#166534' }}>{project.nextDeploy}</strong>
+          <strong style={{ fontWeight: 700, color: '#34d399', fontFamily: 'var(--font-mono)' }}>{project.nextDeploy}</strong>
         </div>
       </div>
     </div>
   );
 }
+

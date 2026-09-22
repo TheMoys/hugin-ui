@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Flame, LayoutGrid, Compass, Monitor, Clock } from 'lucide-react';
+import { Flame, LayoutGrid, Activity, Monitor, Clock, ShieldCheck } from 'lucide-react';
 import FenixPlanning from './components/FenixPlanning';
 import ProjectsBoard from './components/ProjectsBoard';
 import { INITIAL_PROJECTS } from './data/initialData';
@@ -7,7 +7,7 @@ import { INITIAL_PROJECTS } from './data/initialData';
 export default function App() {
   const [activeTab, setActiveTab] = useState('fenix'); // 'fenix' or 'projects'
   const [projects] = useState(INITIAL_PROJECTS);
-  const [slideTimer, setSlideTimer] = useState(15); // 60 seconds rotation
+  const [slideTimer, setSlideTimer] = useState(15); // 15 seconds rotation for testing / preview
 
   // Tick timer every second
   useEffect(() => {
@@ -25,35 +25,39 @@ export default function App() {
     }
   }, [slideTimer]);
 
-  const progressPercent = Math.min(100, Math.max(0, ((60 - slideTimer) / 60) * 100));
+  const progressPercent = Math.min(100, Math.max(0, ((15 - slideTimer) / 15) * 100));
 
   return (
-    <div className="corkboard-frame">
-      <div className="corkboard-main">
+    <div className="dashboard-frame">
+      <div className="dashboard-main">
         {/* Top TV Slide Progress Bar */}
-        <div style={{ width: '100%', height: '6px', background: 'rgba(0,0,0,0.6)', overflow: 'hidden' }}>
+        <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
           <div
             style={{
               height: '100%',
               width: `${progressPercent}%`,
-              background: 'linear-gradient(90deg, #d97706, #3b82f6)',
-              transition: 'width 1s linear'
+              background: 'linear-gradient(90deg, #6366f1, #06b6d4, #10b981)',
+              transition: 'width 1s linear',
+              boxShadow: '0 0 10px rgba(99, 102, 241, 0.8)'
             }}
           ></div>
         </div>
 
-        {/* Top Header - Brass Plaque */}
-        <header className="board-header">
+        {/* Executive Header */}
+        <header className="dashboard-header">
           <div className="brand-badge">
             <div className="brand-icon-wrapper">
-              <Compass size={32} />
+              <Activity size={26} />
             </div>
             <div>
               <div className="brand-title">
-                HUGIN-UI <span style={{ fontSize: '1.4rem' }}>🦅</span>
+                HUGIN CONTROL CENTER
+                <span style={{ fontSize: '0.75rem', padding: '3px 8px', background: 'rgba(99, 102, 241, 0.2)', border: '1px solid rgba(99, 102, 241, 0.4)', borderRadius: '6px', color: '#a5b4fc', fontWeight: 600, letterSpacing: '0.05em' }}>
+                  PRO
+                </span>
               </div>
               <div className="brand-subtitle">
-                Pizarra de Corcho del Equipo • Modo Proyección TV
+                Panel Operativo y de Proyectos del Equipo • Transmisión en Tiempo Real
               </div>
             </div>
           </div>
@@ -62,46 +66,49 @@ export default function App() {
           <div className="nav-tabs">
             <button
               className={`tab-btn ${activeTab === 'fenix' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('fenix'); setSlideTimer(60); }}
+              onClick={() => { setActiveTab('fenix'); setSlideTimer(15); }}
             >
-              <Flame size={20} /> 1. Fénix Planning
+              <Flame size={18} /> Planificación Fénix
             </button>
             <button
               className={`tab-btn ${activeTab === 'projects' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('projects'); setSlideTimer(60); }}
+              onClick={() => { setActiveTab('projects'); setSlideTimer(15); }}
             >
-              <LayoutGrid size={20} /> 2. Estado de Proyectos ({projects.length})
+              <LayoutGrid size={18} /> Proyectos Activos ({projects.length})
             </button>
           </div>
 
           {/* TV Projection Status Badge */}
           <div
             style={{
-              background: 'rgba(0, 0, 0, 0.55)',
-              border: '1.5px solid rgba(255, 255, 255, 0.2)',
-              padding: '10px 18px',
+              background: 'rgba(15, 23, 42, 0.75)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              padding: '8px 16px',
               borderRadius: '12px',
-              fontSize: '0.9rem',
-              color: '#d1b89d',
+              fontSize: '0.85rem',
+              color: 'var(--text-secondary)',
               display: 'flex',
               alignItems: 'center',
               gap: '12px'
             }}
           >
-            <Monitor size={22} color="#34d399" />
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Monitor size={20} color="#38bdf8" />
+              <span style={{ position: 'absolute', top: -2, right: -2, width: 7, height: 7, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 6px #10b981' }}></span>
+            </div>
             <div>
-              <div style={{ color: '#ffffff', fontWeight: 800, fontSize: '0.95rem' }}>
-                Rotación Automática activos (60s)
+              <div style={{ color: '#ffffff', fontWeight: 700, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <ShieldCheck size={14} color="#34d399" /> Modo Proyección Activo
               </div>
-              <div style={{ color: '#94a3b8', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Clock size={14} color="#f59e0b" /> Cambiando vista en: <strong style={{ color: '#f59e0b', fontSize: '1.05rem', fontFamily: 'var(--font-mono)' }}>{slideTimer}s</strong>
+              <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '1px' }}>
+                <Clock size={13} color="#f59e0b" /> Rotación en: <strong style={{ color: '#f59e0b', fontSize: '0.9rem', fontFamily: 'var(--font-mono)' }}>{slideTimer}s</strong>
               </div>
             </div>
           </div>
         </header>
 
         {/* Board Body Content */}
-        <main className="board-content">
+        <main className="dashboard-content">
           {activeTab === 'fenix' ? (
             <FenixPlanning />
           ) : (
@@ -112,3 +119,4 @@ export default function App() {
     </div>
   );
 }
+
