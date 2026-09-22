@@ -1,17 +1,18 @@
 import React from 'react';
-import { Calendar, Clock, GitBranch, ArrowUpRight } from 'lucide-react';
+import { Calendar, Clock, GitBranch } from 'lucide-react';
 
 export default function ProjectCard({ project }) {
   const getStatusBadge = (status) => {
     switch (status) {
-      case 'en_progreso':
-        return { label: 'En Progreso', className: 'badge-en_progreso', dotClass: 'dot-green' };
       case 'en_desarrollo':
-        return { label: 'En Desarrollo', className: 'badge-en_progreso', dotClass: 'dot-green' };
+        return { label: 'En Desarrollo', className: 'badge-en_desarrollo', dotClass: 'dot-green' };
+      case 'en_progreso':
+        return { label: 'En Progreso', className: 'badge-en_progreso', dotClass: 'dot-purple' };
       case 'soporte':
-        return { label: 'Mantenimiento / Soporte', className: 'badge-en_revision', dotClass: 'dot-amber' };
+        return { label: 'Soporte / Mant.', className: 'badge-soporte', dotClass: 'dot-amber' };
       case 'en_revision':
         return { label: 'En Revisión', className: 'badge-en_revision', dotClass: 'dot-amber' };
+
       case 'completado':
         return { label: 'Completado', className: 'badge-completado', dotClass: 'dot-blue' };
       case 'bloqueado':
@@ -29,17 +30,18 @@ export default function ProjectCard({ project }) {
     <div
       className="dash-card"
       style={{
-        padding: '24px',
-        minHeight: '230px',
+        padding: '28px',
+        minHeight: '260px',
         justifyContent: 'space-between',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        borderLeft: '4px solid var(--orange-primary)'
       }}
     >
       {/* Header: Code & Status */}
       <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--accent-cyan)', background: 'rgba(6, 182, 212, 0.12)', border: '1px solid rgba(6, 182, 212, 0.25)', padding: '3px 10px', borderRadius: '6px', fontWeight: 700 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.1rem', color: 'var(--orange-bright)', background: 'var(--orange-subtle)', border: '1px solid var(--orange-border)', padding: '5px 14px', borderRadius: '8px', fontWeight: 800 }}>
             #{project.code}
           </span>
           <span className={`status-badge ${statusInfo.className}`}>
@@ -49,34 +51,37 @@ export default function ProjectCard({ project }) {
         </div>
 
         {/* Project Title */}
-        <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '10px', lineHeight: 1.25, letterSpacing: '-0.01em' }}>
+        <h3 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#ffffff', marginBottom: '14px', lineHeight: 1.25 }}>
           {project.title}
         </h3>
 
         {/* Version Badge */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '4px 10px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', marginBottom: '16px' }}>
-          <GitBranch size={14} color="#818cf8" />
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', padding: '6px 14px', borderRadius: '8px', fontSize: '1.05rem', fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', marginBottom: '18px' }}>
+          <GitBranch size={18} color="var(--orange-primary)" />
           <span>Versión {project.version}</span>
         </div>
       </div>
 
       {/* Dates Section */}
-      <div style={{ background: '#0b0f19', border: '1px solid rgba(255, 255, 255, 0.06)', padding: '12px 14px', borderRadius: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.78rem' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)' }}>
-            <Clock size={13} /> Úl. Actualización
+      <div style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', padding: '16px 20px', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '1.05rem' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)', fontWeight: 600 }}>
+            <Clock size={16} color="var(--orange-primary)" /> Úl. Actualización:
           </span>
-          <strong style={{ fontWeight: 600, color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>{project.lastUpdate}</strong>
+          <strong style={{ fontWeight: 800, color: '#ffffff', fontFamily: 'var(--font-mono)', fontSize: '1.1rem' }}>{project.lastUpdate}</strong>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.78rem', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#34d399' }}>
-            <Calendar size={13} /> Sig. Despliegue
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '1.05rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '10px' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#4ade80', fontWeight: 700 }}>
+            <Calendar size={16} color="#4ade80" /> Sig. Despliegue:
           </span>
-          <strong style={{ fontWeight: 700, color: '#34d399', fontFamily: 'var(--font-mono)' }}>{project.nextDeploy}</strong>
+          <strong style={{ fontWeight: 800, color: '#4ade80', fontFamily: 'var(--font-mono)', fontSize: '1.1rem' }}>{project.nextDeploy}</strong>
         </div>
       </div>
     </div>
   );
 }
+
+
+
 

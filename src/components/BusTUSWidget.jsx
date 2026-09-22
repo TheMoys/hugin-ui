@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bus, Clock, MapPin, RefreshCw, Radio } from 'lucide-react';
+import { Bus, Clock, MapPin, Wifi } from 'lucide-react';
 
 export default function BusTUSWidget() {
   const [stopData, setStopData] = useState({
@@ -91,65 +91,65 @@ export default function BusTUSWidget() {
   };
 
   return (
-    <div className="dash-card" style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderLeft: '4px solid #38bdf8' }}>
+    <div className="dash-card dash-card-orange" style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '28px' }}>
       <div>
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '14px', marginBottom: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.3)', padding: '10px', borderRadius: '12px', color: '#38bdf8' }}>
-              <Bus size={22} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '16px', marginBottom: '18px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div style={{ background: 'var(--orange-subtle)', border: '1px solid var(--orange-border)', padding: '12px', borderRadius: '12px', color: 'var(--orange-primary)' }}>
+              <Bus size={26} />
             </div>
             <div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                MONITOR DE TRANSPORTE TUS
+              <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                MONITOR TUS SANTANDER
               </h3>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
-                <MapPin size={13} color="#38bdf8" /> Paradas PCTCAN Santander (488 y 487)
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                <MapPin size={15} color="var(--orange-primary)" /> Paradas PCTCAN (488 y 487)
               </span>
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '5px 12px', borderRadius: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--orange-subtle)', border: '1px solid var(--orange-border)', padding: '8px 14px', borderRadius: '24px' }}>
             <div className="bus-live-pulse"></div>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#34d399', letterSpacing: '0.05em' }}>
-              TELEMETRÍA EN VIVO
+            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--orange-primary)', letterSpacing: '0.04em' }}>
+              EN VIVO
             </span>
           </div>
         </div>
 
         {/* Sync Info */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem', color: 'var(--text-muted)', fontWeight: 500, marginBottom: '18px' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Radio size={12} color="#10b981" /> Actualización cada 30s
+            <Wifi size={15} color="var(--orange-primary)" /> API Santander Sync (30s)
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)' }}>
-            <Clock size={12} /> {lastUpdated.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+            <Clock size={15} /> {lastUpdated.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
           </span>
         </div>
 
         {/* PARADA 488 */}
         <div style={{ marginBottom: '20px' }}>
-          <div style={{ background: '#0b0f19', borderLeft: '3px solid #38bdf8', padding: '8px 12px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 700, color: '#f1f5f9', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>PARADA 488: Pctcan (UNEATLANTICO)</span>
-            <span style={{ color: '#38bdf8', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>L1 • L24C1 • L24C2</span>
+          <div style={{ background: 'var(--bg-inner)', borderLeft: '3px solid var(--orange-primary)', padding: '10px 16px', borderRadius: '10px', fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>🚏 PARADA 488: Pctcan (UNEATLANTICO)</span>
+            <span style={{ color: 'var(--orange-primary)', fontSize: '0.85rem', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>L1 • L24C1 • L24C2</span>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {stopData['488'].map((item, idx) => (
               <div key={idx} className="bus-line-row">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                   <span className={`line-badge ${getLineBadgeClass(item.line)}`}>
                     L{item.line.replace(/^L/i, '')}
                   </span>
-                  <div style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                  <div style={{ fontSize: '1.12rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                     {item.destination}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: item.nextMinutes <= 3 ? '#fb7185' : '#38bdf8' }}>
-                    {item.nextMinutes} <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>min</span>
+                  <div style={{ fontSize: '1.65rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: item.nextMinutes <= 3 ? '#fb7185' : 'var(--orange-primary)', lineHeight: 1 }}>
+                    {item.nextMinutes} <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>min</span>
                   </div>
                   {item.secondMinutes && (
-                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                       Sig: {item.secondMinutes}m
                     </span>
                   )}
@@ -161,27 +161,27 @@ export default function BusTUSWidget() {
 
         {/* PARADA 487 */}
         <div>
-          <div style={{ background: '#0b0f19', borderLeft: '3px solid #c084fc', padding: '8px 12px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 700, color: '#f1f5f9', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>PARADA 487: Pctcan 1</span>
-            <span style={{ color: '#c084fc', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>L1 • L13 • L14</span>
+          <div style={{ background: 'var(--bg-inner)', borderLeft: '3px solid #f97316', padding: '10px 16px', borderRadius: '10px', fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>🚏 PARADA 487: Pctcan 1</span>
+            <span style={{ color: 'var(--orange-primary)', fontSize: '0.85rem', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>L1 • L13 • L14</span>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {stopData['487'].map((item, idx) => (
               <div key={idx} className="bus-line-row">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                   <span className={`line-badge ${getLineBadgeClass(item.line)}`}>
                     L{item.line.replace(/^L/i, '')}
                   </span>
-                  <div style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                  <div style={{ fontSize: '1.12rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                     {item.destination}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: item.nextMinutes <= 3 ? '#fb7185' : '#c084fc' }}>
-                    {item.nextMinutes} <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>min</span>
+                  <div style={{ fontSize: '1.65rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: item.nextMinutes <= 3 ? '#fb7185' : 'var(--orange-primary)', lineHeight: 1 }}>
+                    {item.nextMinutes} <span style={{ fontSize: '0.88rem', fontWeight: 600 }}>min</span>
                   </div>
                   {item.secondMinutes && (
-                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                       Sig: {item.secondMinutes}m
                     </span>
                   )}
@@ -194,4 +194,6 @@ export default function BusTUSWidget() {
     </div>
   );
 }
+
+
 

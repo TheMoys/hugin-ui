@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Target, Clock, MapPin, Flag } from 'lucide-react';
+import { Calendar, Target, Clock, MapPin, Sparkles } from 'lucide-react';
 import BusTUSWidget from './BusTUSWidget';
 import { INITIAL_REVIEW, INITIAL_SPRINT_GOAL } from '../data/initialData';
 
 export default function FenixPlanning() {
   const [review] = useState(INITIAL_REVIEW);
   const [sprintGoal] = useState(INITIAL_SPRINT_GOAL);
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [timeLeft, setTimeLeft] = useState({ days: 8, hours: 2, minutes: 53, seconds: 38 });
 
-  // Calculate countdown to next review
   useEffect(() => {
     const calculateTimeLeft = () => {
       const difference = new Date(review.targetDate) - new Date();
@@ -20,7 +19,7 @@ export default function FenixPlanning() {
           seconds: Math.floor((difference / 1000) % 60)
         });
       } else {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        setTimeLeft({ days: 8, hours: 2, minutes: 53, seconds: 38 });
       }
     };
 
@@ -32,84 +31,102 @@ export default function FenixPlanning() {
   return (
     <div className="fenix-grid">
       {/* LEFT COLUMN: Recordatorio Review & Objetivo del Sprint */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', height: '100%' }}>
-        
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '22px', height: '100%' }}>
+
         {/* Card 1: Próximo Review */}
-        <div className="dash-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderLeft: '4px solid #6366f1' }}>
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
+        <div className="dash-card dash-card-orange" style={{ padding: '28px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <div style={{ background: 'var(--orange-subtle)', border: '1px solid var(--orange-border)', padding: '12px', borderRadius: '12px', color: 'var(--orange-primary)' }}>
+                <Calendar size={26} />
+              </div>
               <div>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#818cf8', letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Calendar size={14} /> REVISIÓN DE SPRINT & PLANIFICACIÓN
+                <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--orange-primary)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                  REVISIÓN DE SPRINT & PLANIFICACIÓN
                 </span>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
+                <h3 style={{ fontSize: '1.55rem', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0 0 0' }}>
                   {review.title}
                 </h3>
-              </div>
-              <div style={{ background: 'rgba(99, 102, 241, 0.15)', border: '1px solid rgba(99, 102, 241, 0.3)', padding: '10px', borderRadius: '12px', color: '#818cf8' }}>
-                <Clock size={24} />
-              </div>
-            </div>
-
-            {/* Countdown Box */}
-            <div style={{ background: '#0b0f19', border: '1px solid rgba(255, 255, 255, 0.08)', padding: '18px 20px', borderRadius: '14px', margin: '14px 0' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: '10px', display: 'flex', alignItems: 'center', justifyBetween: 'space-between', width: '100%' }}>
-                <span>TIEMPO RESTANTE</span>
-                <span style={{ color: '#818cf8', marginLeft: 'auto', fontFamily: 'var(--font-mono)' }}>{review.scheduleText}</span>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', textAlign: 'center', fontFamily: 'var(--font-mono)' }}>
-                <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)', padding: '10px 6px', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#f8fafc', lineHeight: 1 }}>{timeLeft.days}</div>
-                  <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700, marginTop: '4px' }}>DÍAS</div>
-                </div>
-                <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)', padding: '10px 6px', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#f8fafc', lineHeight: 1 }}>{timeLeft.hours}</div>
-                  <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700, marginTop: '4px' }}>HORAS</div>
-                </div>
-                <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)', padding: '10px 6px', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#f8fafc', lineHeight: 1 }}>{timeLeft.minutes}</div>
-                  <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700, marginTop: '4px' }}>MINS</div>
-                </div>
-                <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(99, 102, 241, 0.2)', padding: '10px 6px', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#818cf8', lineHeight: 1 }}>{timeLeft.seconds}</div>
-                  <div style={{ fontSize: '0.7rem', color: '#818cf8', fontWeight: 700, marginTop: '4px' }}>SEGS</div>
-                </div>
               </div>
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.06)', padding: '10px 14px', borderRadius: '10px', fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-            <MapPin size={16} color="#38bdf8" />
+          <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', fontWeight: 600, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Clock size={18} color="var(--orange-primary)" />
+            <span>TIEMPO RESTANTE ({review.scheduleText})</span>
+          </div>
+
+          {/* Countdown Grid - Sleek Large Numbers */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '18px' }}>
+            <div style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', borderRadius: '12px', padding: '14px 10px', textAlign: 'center' }}>
+              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--orange-primary)', fontFamily: 'var(--font-mono)', lineHeight: 1 }}>
+                {timeLeft.days}
+              </div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginTop: '6px' }}>Días</div>
+            </div>
+
+            <div style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', borderRadius: '12px', padding: '14px 10px', textAlign: 'center' }}>
+              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', lineHeight: 1 }}>
+                {timeLeft.hours}
+              </div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginTop: '6px' }}>Horas</div>
+            </div>
+
+            <div style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', borderRadius: '12px', padding: '14px 10px', textAlign: 'center' }}>
+              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', lineHeight: 1 }}>
+                {timeLeft.minutes}
+              </div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginTop: '6px' }}>Mins</div>
+            </div>
+
+            <div style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', borderRadius: '12px', padding: '14px 10px', textAlign: 'center' }}>
+              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--orange-primary)', fontFamily: 'var(--font-mono)', lineHeight: 1 }}>
+                {timeLeft.seconds}
+              </div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--orange-primary)', textTransform: 'uppercase', marginTop: '6px' }}>Segs</div>
+            </div>
+          </div>
+
+          <div style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', padding: '12px 18px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '0.95rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
+            <MapPin size={18} color="var(--orange-primary)" />
             <span><strong>Ubicación:</strong> {review.location}</span>
           </div>
         </div>
 
         {/* Card 2: Objetivo del Sprint */}
-        <div className="dash-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderLeft: '4px solid #06b6d4' }}>
+        <div className="dash-card" style={{ flex: 1, padding: '28px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderLeft: '3px solid var(--orange-primary)' }}>
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-              <div>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#22d3ee', letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Flag size={14} /> INICIATIVA CLAVE DEL EQUIPO
-                </span>
-                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
-                  {sprintGoal.title}
-                </h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <div style={{ background: 'var(--orange-subtle)', border: '1px solid var(--orange-border)', padding: '12px', borderRadius: '12px', color: 'var(--orange-primary)' }}>
+                  <Target size={26} />
+                </div>
+                <div>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--orange-primary)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                    SPRINT ACTUAL • INICIATIVA CLAVE
+                  </span>
+                  <h3 style={{ fontSize: '1.55rem', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0 0 0' }}>
+                    {sprintGoal.title}
+                  </h3>
+                </div>
               </div>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', background: 'rgba(6, 182, 212, 0.15)', color: '#22d3ee', padding: '4px 10px', borderRadius: '6px', border: '1px solid rgba(6, 182, 212, 0.3)', fontWeight: 700 }}>
+              <span style={{ background: 'var(--orange-subtle)', color: 'var(--orange-primary)', border: '1px solid var(--orange-border)', fontWeight: 700, fontSize: '0.88rem', padding: '6px 14px', borderRadius: '8px', fontFamily: 'var(--font-mono)' }}>
                 {sprintGoal.code}
               </span>
             </div>
 
-            <p style={{ fontSize: '1.02rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginTop: '8px' }}>
-              {sprintGoal.description}
-            </p>
+            <div style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', padding: '20px', borderRadius: '14px', marginTop: '12px' }}>
+              <p style={{ fontSize: '1.2rem', color: 'var(--text-primary)', lineHeight: 1.5, fontWeight: 600, margin: 0 }}>
+                "{sprintGoal.description}"
+              </p>
+            </div>
           </div>
 
-          <div style={{ background: 'rgba(6, 182, 212, 0.06)', border: '1px solid rgba(6, 182, 212, 0.15)', padding: '10px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Target size={18} color="#22d3ee" />
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Prioridad crítica para la entrega del sprint activo</span>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '20px', paddingTop: '14px', borderTop: '1px solid var(--border-subtle)' }}>
+            <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)', fontWeight: 500 }}>Responsable: Equipo de Desarrollo Fénix</span>
+            <span style={{ fontSize: '0.95rem', color: 'var(--orange-primary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Sparkles size={16} /> Prioridad Alta
+            </span>
           </div>
         </div>
 

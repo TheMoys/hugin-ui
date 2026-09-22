@@ -5,49 +5,50 @@ import ProjectCard from './ProjectCard';
 export default function ProjectsBoard({ projects }) {
   const inProgressCount = projects.filter(p => p.status === 'en_progreso' || p.status === 'en_desarrollo').length;
   const supportCount = projects.filter(p => p.status === 'soporte').length;
-  const completedCount = projects.filter(p => p.status === 'completado').length;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '26px', height: '100%' }}>
       {/* KPI Metrics Summary Bar */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{ background: 'rgba(99, 102, 241, 0.15)', border: '1px solid rgba(99, 102, 241, 0.3)', padding: '10px', borderRadius: '10px', color: '#818cf8' }}>
-            <Layers size={20} />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '22px' }}>
+        <div className="dash-card" style={{ padding: '20px 26px', display: 'flex', alignItems: 'center', gap: '18px' }}>
+          <div style={{ background: 'var(--orange-subtle)', border: '1px solid var(--orange-border)', padding: '14px', borderRadius: '14px', color: 'var(--orange-primary)' }}>
+            <Layers size={26} />
           </div>
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Total Sistemas</div>
-            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>{projects.length}</div>
+            <div style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase' }}>TOTAL SISTEMAS</div>
+            <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#ffffff', fontFamily: 'var(--font-mono)', lineHeight: 1, marginTop: '4px' }}>{projects.length}</div>
           </div>
         </div>
 
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '10px', borderRadius: '10px', color: '#34d399' }}>
-            <Activity size={20} />
+        <div className="dash-card" style={{ padding: '20px 26px', display: 'flex', alignItems: 'center', gap: '18px' }}>
+          <div style={{ background: 'rgba(34, 197, 94, 0.18)', border: '1px solid #22c55e', padding: '14px', borderRadius: '14px', color: '#4ade80' }}>
+            <Activity size={26} />
           </div>
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>En Desarrollo</div>
-            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#34d399', fontFamily: 'var(--font-mono)' }}>{inProgressCount}</div>
+            <div style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase' }}>EN DESARROLLO</div>
+            <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#4ade80', fontFamily: 'var(--font-mono)', lineHeight: 1, marginTop: '4px' }}>{inProgressCount}</div>
           </div>
         </div>
 
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{ background: 'rgba(245, 158, 11, 0.15)', border: '1px solid rgba(245, 158, 11, 0.3)', padding: '10px', borderRadius: '10px', color: '#fbbf24' }}>
-            <Wrench size={20} />
+
+
+        <div className="dash-card" style={{ padding: '20px 26px', display: 'flex', alignItems: 'center', gap: '18px' }}>
+          <div style={{ background: 'rgba(245, 158, 11, 0.18)', border: '1px solid #f59e0b', padding: '14px', borderRadius: '14px', color: '#fcd34d' }}>
+            <Wrench size={26} />
           </div>
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Mantenimiento / Soporte</div>
-            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fbbf24', fontFamily: 'var(--font-mono)' }}>{supportCount}</div>
+            <div style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase' }}>MANTENIMIENTO</div>
+            <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fcd34d', fontFamily: 'var(--font-mono)', lineHeight: 1, marginTop: '4px' }}>{supportCount}</div>
           </div>
         </div>
 
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-card)', borderRadius: '12px', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{ background: 'rgba(14, 165, 233, 0.15)', border: '1px solid rgba(14, 165, 233, 0.3)', padding: '10px', borderRadius: '10px', color: '#38bdf8' }}>
-            <CheckCircle2 size={20} />
+        <div className="dash-card dash-card-orange" style={{ padding: '20px 26px', display: 'flex', alignItems: 'center', gap: '18px' }}>
+          <div style={{ background: 'var(--orange-subtle)', border: '1px solid var(--orange-border)', padding: '14px', borderRadius: '14px', color: 'var(--orange-primary)' }}>
+            <CheckCircle2 size={26} />
           </div>
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Versión Estable</div>
-            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#38bdf8', fontFamily: 'var(--font-mono)' }}>{projects.length}</div>
+            <div style={{ fontSize: '0.95rem', color: 'var(--orange-bright)', fontWeight: 800, textTransform: 'uppercase' }}>VERSIÓN ESTABLE</div>
+            <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#ffffff', fontFamily: 'var(--font-mono)', lineHeight: 1, marginTop: '4px' }}>{projects.length}</div>
           </div>
         </div>
       </div>
@@ -61,4 +62,7 @@ export default function ProjectsBoard({ projects }) {
     </div>
   );
 }
+
+
+
 
