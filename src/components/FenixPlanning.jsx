@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Target, Clock, MapPin, Sparkles, CheckCircle2, Users, FileText } from 'lucide-react';
 import BusTUSWidget from './BusTUSWidget';
+import WeatherWidget from './WeatherWidget';
 import { INITIAL_REVIEW, INITIAL_SPRINT_GOAL } from '../data/initialData';
 
 export default function FenixPlanning() {
@@ -28,8 +29,12 @@ export default function FenixPlanning() {
     return () => clearInterval(timer);
   }, [review.targetDate]);
 
+  const SPRINT_CYCLE_MS = 14 * 24 * 60 * 60 * 1000;
+  const msRemaining = new Date(review.targetDate) - new Date();
+  const sprintCycleProgress = Math.min(100, Math.max(0, 100 - (msRemaining / SPRINT_CYCLE_MS) * 100));
+
   return (
-    <div className="fenix-grid">
+    <div className="fenix-grid tab-fade-in">
       {/* COLUMN 1: Próximo Sprint Planning / Review */}
       <div className="dash-card dash-card-orange" style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '18px 20px' }}>
         <div>
@@ -76,11 +81,22 @@ export default function FenixPlanning() {
               <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginTop: '4px' }}>Mins</div>
             </div>
 
-            <div style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '12px 4px', textAlign: 'center' }}>
+            <div className="countdown-live-pulse" style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '12px 4px', textAlign: 'center' }}>
               <div style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--orange-primary)', fontFamily: 'var(--font-mono)', lineHeight: 1 }}>
                 {timeLeft.seconds}
               </div>
               <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--orange-primary)', textTransform: 'uppercase', marginTop: '4px' }}>Segs</div>
+            </div>
+          </div>
+
+          {/* Sprint Cycle Progress */}
+          <div style={{ marginBottom: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              <span>Progreso del Ciclo</span>
+              <span style={{ color: 'var(--orange-primary)', fontFamily: 'var(--font-mono)' }}>{Math.round(sprintCycleProgress)}%</span>
+            </div>
+            <div style={{ height: '8px', borderRadius: '6px', background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${sprintCycleProgress}%`, background: 'linear-gradient(90deg, var(--orange-primary), var(--orange-bright))', transition: 'width 1s linear', borderRadius: '6px' }}></div>
             </div>
           </div>
 
@@ -170,9 +186,12 @@ export default function FenixPlanning() {
         </div>
       </div>
 
-      {/* COLUMN 3: Bus TUS Santander Paradas 488 y 487 */}
-      <div style={{ height: '100%' }}>
-        <BusTUSWidget />
+      {/* COLUMN 3: Clima + Bus TUS Santander Paradas 454 y 488 */}
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <WeatherWidget />
+        <div style={{ flex: 1, minHeight: 0 }}>
+          <BusTUSWidget />
+        </div>
       </div>
     </div>
   );
