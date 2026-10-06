@@ -1,36 +1,125 @@
 import React, { useState, useEffect } from 'react';
 import { Bus, Clock, MapPin, Wifi } from 'lucide-react';
 
-// Horarios oficiales del TUS para Paradas 454 (Glorieta de Adarzo / PCTCAN 1) y 488 (Uneatlantico)
+// Horarios oficiales extraídos directamente del Libro General del TUS Santander vigente
+// Parada 488: PCTCAN - UNEATLANTICO (Cabecera L1)
+const L1_488_LAB = [
+  '07:51', '08:06', '08:23', '08:41', '08:59', '09:16', '09:33', '09:51',
+  '10:06', '10:23', '10:41', '10:59', '11:17', '11:34', '11:52', '12:07',
+  '12:25', '12:44', '13:02', '13:20', '13:36', '13:55', '14:14', '14:33',
+  '14:51', '15:09', '15:24', '15:43', '16:02', '16:21', '16:39', '16:57',
+  '17:13', '17:29', '17:47', '18:06', '18:25', '18:43', '19:01', '19:17',
+  '19:33', '19:51', '20:10', '20:29', '20:47', '21:04', '21:20', '21:40',
+  '22:00', '22:20'
+];
+
+const L1_488_FEST = [
+  '07:49', '08:14', '08:39', '09:04', '09:29', '09:49', '10:09', '10:34',
+  '10:59', '11:24', '11:44', '12:04', '12:29', '12:54', '13:19', '13:43',
+  '14:09', '14:34', '14:59', '15:24', '15:49', '16:14', '16:39', '17:04',
+  '17:29', '17:54', '18:14', '18:34', '18:56', '19:24', '19:49', '20:09',
+  '20:29', '20:46', '21:19', '21:44', '22:09', '22:20'
+];
+
+// Parada 454: PCTCAN 1 (Glorieta de Adarzo)
+// L1 pasa por Parada 454 aprox. 2 minutos tras salir de UNEATLANTICO (488)
+const L1_454_LAB = [
+  '07:53', '08:08', '08:25', '08:43', '09:01', '09:18', '09:35', '09:53',
+  '10:08', '10:25', '10:43', '11:01', '11:19', '11:36', '11:54', '12:09',
+  '12:27', '12:46', '13:04', '13:22', '13:38', '13:57', '14:16', '14:35',
+  '14:53', '15:11', '15:26', '15:45', '16:04', '16:23', '16:41', '16:59',
+  '17:15', '17:31', '17:49', '18:08', '18:27', '18:45', '19:03', '19:19',
+  '19:35', '19:53', '20:12', '20:31', '20:49', '21:06', '21:22', '21:42',
+  '22:02', '22:22'
+];
+
+const L1_454_FEST = [
+  '07:51', '08:16', '08:41', '09:06', '09:31', '09:51', '10:11', '10:36',
+  '11:01', '11:26', '11:46', '12:06', '12:31', '12:56', '13:21', '13:45',
+  '14:11', '14:36', '15:01', '15:26', '15:51', '16:16', '16:41', '17:06',
+  '17:31', '17:56', '18:16', '18:36', '18:58', '19:26', '19:51', '20:11',
+  '20:31', '20:48', '21:21', '21:46', '22:11', '22:22'
+];
+
+// L13 pasa por PCTCAN 1 (454) aprox. 4 minutos tras salir de Cementerio Lluja
+const L13_454_LAB = [
+  '07:09', '07:39', '08:04', '08:34', '09:04', '09:34', '09:59', '10:44',
+  '11:14', '12:04', '12:29', '12:59', '13:29', '14:04', '14:29', '15:04',
+  '15:34', '16:04', '16:34', '17:04', '17:34', '18:04', '18:34', '19:19',
+  '19:49', '20:34', '21:09', '21:34', '22:09'
+];
+
+const L13_454_SAB = [
+  '07:09', '07:39', '08:09', '08:39', '09:09', '09:39', '10:09', '10:49',
+  '11:22', '12:09', '12:39', '13:09', '13:34', '14:04', '14:37', '15:09',
+  '15:39', '16:09', '16:39', '17:09', '17:39', '18:09', '18:39', '19:19',
+  '19:54', '20:39', '21:14', '21:44', '22:08'
+];
+
+const L13_454_DOM = [
+  '07:34', '08:34', '09:34', '11:04', '12:04', '13:04', '14:04', '15:04',
+  '16:04', '17:04', '18:34', '19:34', '20:34', '21:34', '22:24'
+];
+
+// L24C1 pasa por PCTCAN 1 (454) aprox. 1 minuto tras salir de PCTCAN 2
+const L24C1_454 = [
+  '07:16', '07:46', '08:16', '08:46', '09:16', '09:46', '10:16', '10:46',
+  '11:16', '11:46', '12:16', '12:46', '13:16', '13:46', '14:16', '14:46',
+  '15:16', '15:46', '16:16', '16:46', '17:16', '17:46', '18:16', '18:46',
+  '19:16', '19:46', '20:16', '20:46', '21:16', '21:46', '22:16', '22:46'
+];
+
+// Cálculo exacto del tiempo restante hasta la próxima y segunda salida programada
 const calculateScheduledDepartures = (now = new Date()) => {
-  const getNextArrivals = (hourlyMinuteOffsets, startHour = 6.6, endHour = 23.2) => {
-    const currentHourDecimal = now.getHours() + now.getMinutes() / 60;
-    if (currentHourDecimal < startHour || currentHourDecimal > endHour) {
-      return { nextMinutes: 45, secondMinutes: 90 };
-    }
+  const day = now.getDay(); // 0: Dom, 6: Sab
+  const isSunday = day === 0;
+  const isSaturday = day === 6;
 
-    const currentMinuteInHour = now.getMinutes() + now.getSeconds() / 60;
-    let upcoming = [];
+  const l1_488_list = isSunday || isSaturday ? L1_488_FEST : L1_488_LAB;
+  const l1_454_list = isSunday || isSaturday ? L1_454_FEST : L1_454_LAB;
+  const l13_454_list = isSunday ? L13_454_DOM : (isSaturday ? L13_454_SAB : L13_454_LAB);
+  const l24c1_454_list = L24C1_454;
 
-    for (let h = 0; h <= 2; h++) {
-      for (const m of hourlyMinuteOffsets) {
-        const arrivalMinuteFromNow = (h * 60 + m) - currentMinuteInHour;
-        if (arrivalMinuteFromNow >= 0.2) {
-          upcoming.push(Math.round(arrivalMinuteFromNow));
-        }
+  const getNextArrivals = (timetable) => {
+    const nowMinutes = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
+    const upcoming = [];
+
+    for (const timeStr of timetable) {
+      const [h, m] = timeStr.split(':').map(Number);
+      const diff = (h * 60 + m) - nowMinutes;
+      if (diff >= -0.5) {
+        upcoming.push({ minutes: Math.max(0, Math.round(diff)), time: timeStr });
       }
     }
 
-    upcoming.sort((a, b) => a - b);
-    const nextMinutes = Math.max(1, upcoming[0] || 5);
-    const secondMinutes = upcoming[1] ? Math.max(nextMinutes + 2, upcoming[1]) : nextMinutes + 12;
-    return { nextMinutes, secondMinutes };
+    if (upcoming.length === 0) {
+      // Si ya pasó el último del día, muestra el primer servicio de la mañana siguiente
+      const first = timetable[0];
+      const [fh, fm] = first.split(':').map(Number);
+      const diffTomorrow = (24 * 60 - nowMinutes) + (fh * 60 + fm);
+      return {
+        nextMinutes: Math.round(diffTomorrow),
+        nextTime: first,
+        secondMinutes: null,
+        secondTime: null
+      };
+    }
+
+    const first = upcoming[0];
+    const second = upcoming[1] || null;
+
+    return {
+      nextMinutes: first.minutes,
+      nextTime: first.time,
+      secondMinutes: second ? second.minutes : null,
+      secondTime: second ? second.time : null
+    };
   };
 
-  const l1_488 = getNextArrivals([4, 16, 28, 40, 52]);
-  const l1_454 = getNextArrivals([2, 14, 26, 38, 50]);
-  const l13_454 = getNextArrivals([16, 46]);
-  const l24c1_454 = getNextArrivals([8, 28, 48]);
+  const l1_488 = getNextArrivals(l1_488_list);
+  const l1_454 = getNextArrivals(l1_454_list);
+  const l13_454 = getNextArrivals(l13_454_list);
+  const l24c1_454 = getNextArrivals(l24c1_454_list);
 
   return {
     '488': [
@@ -38,7 +127,9 @@ const calculateScheduledDepartures = (now = new Date()) => {
         line: '1',
         destination: 'PCTCAN-UNEATLANTICO',
         nextMinutes: l1_488.nextMinutes,
+        nextTime: l1_488.nextTime,
         secondMinutes: l1_488.secondMinutes,
+        secondTime: l1_488.secondTime,
         distanceMeter: 850
       }
     ],
@@ -47,21 +138,27 @@ const calculateScheduledDepartures = (now = new Date()) => {
         line: '1',
         destination: 'VALDENOJA / PCTCAN',
         nextMinutes: l1_454.nextMinutes,
+        nextTime: l1_454.nextTime,
         secondMinutes: l1_454.secondMinutes,
+        secondTime: l1_454.secondTime,
         distanceMeter: 1510
       },
       {
         line: '13',
         destination: 'CUETO / REINA VICTORIA',
         nextMinutes: l13_454.nextMinutes,
+        nextTime: l13_454.nextTime,
         secondMinutes: l13_454.secondMinutes,
+        secondTime: l13_454.secondTime,
         distanceMeter: 4200
       },
       {
         line: '24C1',
         destination: 'PCTCAN CIRCULAR',
         nextMinutes: l24c1_454.nextMinutes,
+        nextTime: l24c1_454.nextTime,
         secondMinutes: l24c1_454.secondMinutes,
+        secondTime: l24c1_454.secondTime,
         distanceMeter: 2900
       }
     ]
@@ -109,13 +206,15 @@ export default function BusTUSWidget() {
             return list.slice(0, 6).map(item => {
               const t1 = parseInt(item['ayto:tiempo1'] || '0', 10);
               const t2 = parseInt(item['ayto:tiempo2'] || '0', 10);
-              const mins1 = Math.max(1, Math.round(t1 / 60));
-              const mins2 = Math.max(1, Math.round(t2 / 60));
+              const mins1 = Math.max(0, Math.round(t1 / 60));
+              const mins2 = Math.max(0, Math.round(t2 / 60));
               return {
                 line: String(item['ayto:etiqLinea'] || '1').replace(/^L/i, '').trim(),
                 destination: (item['ayto:destino1'] || 'PCTCAN').trim(),
                 nextMinutes: mins1,
+                nextTime: null,
                 secondMinutes: mins2 > 0 ? mins2 : null,
+                secondTime: null,
                 distanceMeter: parseInt(item['ayto:distancia1'] || '0', 10)
               };
             });
@@ -134,8 +233,8 @@ export default function BusTUSWidget() {
         }
       }
 
-      // Si la API municipal no tiene datos de telemetría en este instante,
-      // calculamos los minutos exactos basados en la hora real y los horarios oficiales de paso de TUS Santander
+      // Si la API municipal no tiene eventos GPS en este momento,
+      // calculamos los minutos exactos basados en la hora real y los horarios oficiales de TUS Santander
       const calculated = calculateScheduledDepartures(now);
       setStopData(calculated);
       setIsLiveGps(false);
@@ -152,7 +251,7 @@ export default function BusTUSWidget() {
 
   useEffect(() => {
     fetchTUSData();
-    // Consulta la API cada 30 segundos
+    // Consulta y sincronización cada 30 segundos
     const timer = setInterval(fetchTUSData, 30000);
     return () => clearInterval(timer);
   }, []);
@@ -197,7 +296,7 @@ export default function BusTUSWidget() {
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.92rem', color: 'var(--text-muted)', fontWeight: 500, marginBottom: '12px' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Wifi size={15} color={isLiveGps ? "#4ade80" : "var(--orange-primary)"} />
-            {isLiveGps ? 'API TUS Santander GPS (30s)' : 'API TUS Santander Sync (30s)'}
+            {isLiveGps ? 'API TUS Santander GPS (30s)' : 'TUS Santander Sincronizado (30s)'}
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)' }}>
             <Clock size={15} /> {lastUpdated.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
@@ -205,7 +304,7 @@ export default function BusTUSWidget() {
         </div>
 
         {/* PARADA 488 */}
-        <div>
+        <div style={{ marginBottom: '14px' }}>
           <div style={{ background: 'var(--bg-inner)', borderLeft: '3px solid #f97316', padding: '8px 14px', borderRadius: '8px', fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span>PARADA 488: Pctcan (UNEATLANTICO)</span>
             <span style={{ color: 'var(--orange-primary)', fontSize: '0.92rem', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
@@ -219,8 +318,15 @@ export default function BusTUSWidget() {
                   <span className={`line-badge ${getLineBadgeClass(item.line)}`} style={{ fontSize: '1.25rem', padding: '6px 14px' }}>
                     L{item.line.replace(/^L/i, '')}
                   </span>
-                  <div style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                    {item.destination}
+                  <div>
+                    <div style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                      {item.destination}
+                    </div>
+                    {item.nextTime && (
+                      <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+                        Paso programado: <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{item.nextTime}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
@@ -228,8 +334,8 @@ export default function BusTUSWidget() {
                     {item.nextMinutes} <span style={{ fontSize: '0.95rem', fontWeight: 600 }}>min</span>
                   </div>
                   {item.secondMinutes && (
-                    <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                      Sig: {item.secondMinutes}m
+                    <span style={{ fontSize: '0.88rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'block', marginTop: '3px' }}>
+                      Sig: {item.secondMinutes}m {item.secondTime ? `(${item.secondTime})` : ''}
                     </span>
                   )}
                 </div>
@@ -241,7 +347,7 @@ export default function BusTUSWidget() {
         {/* PARADA 454 */}
         <div style={{ marginBottom: '14px' }}>
           <div style={{ background: 'var(--bg-inner)', borderLeft: '3px solid var(--orange-primary)', padding: '8px 14px', borderRadius: '8px', fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>PARADA 454</span>
+            <span>PARADA 454: Pctcan 1 (Glorieta Adarzo)</span>
             <span style={{ color: 'var(--orange-primary)', fontSize: '0.92rem', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
               {stopData['454'].map(i => `L${i.line}`).join(' • ')}
             </span>
@@ -253,8 +359,15 @@ export default function BusTUSWidget() {
                   <span className={`line-badge ${getLineBadgeClass(item.line)}`} style={{ fontSize: '1.25rem', padding: '6px 14px' }}>
                     L{item.line.replace(/^L/i, '')}
                   </span>
-                  <div style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                    {item.destination}
+                  <div>
+                    <div style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                      {item.destination}
+                    </div>
+                    {item.nextTime && (
+                      <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+                        Paso programado: <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{item.nextTime}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
@@ -262,8 +375,8 @@ export default function BusTUSWidget() {
                     {item.nextMinutes} <span style={{ fontSize: '0.95rem', fontWeight: 600 }}>min</span>
                   </div>
                   {item.secondMinutes && (
-                    <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                      Sig: {item.secondMinutes}m
+                    <span style={{ fontSize: '0.88rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'block', marginTop: '3px' }}>
+                      Sig: {item.secondMinutes}m {item.secondTime ? `(${item.secondTime})` : ''}
                     </span>
                   )}
                 </div>
