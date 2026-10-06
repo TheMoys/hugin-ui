@@ -12,7 +12,6 @@ export default function ProjectCard({ project }) {
         return { label: 'Soporte / Mant.', className: 'badge-soporte', dotClass: 'dot-amber' };
       case 'en_revision':
         return { label: 'En Revisión', className: 'badge-en_revision', dotClass: 'dot-amber' };
-
       case 'completado':
         return { label: 'Completado', className: 'badge-completado', dotClass: 'dot-blue' };
       case 'bloqueado':
@@ -30,57 +29,54 @@ export default function ProjectCard({ project }) {
     <div
       className="dash-card"
       style={{
-        padding: '16px 20px',
+        padding: '12px 14px',
         justifyContent: 'space-between',
         display: 'flex',
         flexDirection: 'column',
-        borderLeft: '4px solid var(--orange-primary)'
+        borderLeft: '4px solid var(--orange-primary)',
+        minHeight: '170px'
       }}
     >
       {/* Header: Code & Status */}
       <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', color: 'var(--orange-bright)', background: 'var(--orange-subtle)', border: '1px solid var(--orange-border)', padding: '4px 14px', borderRadius: '6px', fontWeight: 800 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--orange-bright)', background: 'var(--orange-subtle)', border: '1px solid var(--orange-border)', padding: '2px 8px', borderRadius: '4px', fontWeight: 800 }}>
             #{project.code}
           </span>
-          <span className={`status-badge ${statusInfo.className}`} style={{ fontSize: '1.15rem', padding: '6px 16px' }}>
-            <span className={`status-dot ${statusInfo.dotClass}`} style={{ width: 11, height: 11 }}></span>
+          <span className={`status-badge ${statusInfo.className}`} style={{ fontSize: '0.78rem', padding: '3px 8px' }}>
+            <span className={`status-dot ${statusInfo.dotClass}`} style={{ width: 8, height: 8 }}></span>
             {statusInfo.label}
           </span>
         </div>
 
         {/* Project Title */}
-        <h3 style={{ fontSize: '2.25rem', fontWeight: 900, color: '#ffffff', marginBottom: '12px', lineHeight: 1.25, letterSpacing: '-0.01em' }}>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', marginBottom: '8px', lineHeight: 1.25, letterSpacing: '-0.01em' }}>
           {project.title}
         </h3>
 
         {/* Version Badge */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', padding: '6px 14px', borderRadius: '8px', fontSize: '1.22rem', fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', marginBottom: '14px' }}>
-          <GitBranch size={20} color="var(--orange-primary)" />
-          <span>Versión {project.version}</span>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', padding: '3px 8px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', marginBottom: '10px' }}>
+          <GitBranch size={14} color="var(--orange-primary)" />
+          <span>v{project.version}</span>
         </div>
       </div>
 
       {/* Dates Section */}
-      <div style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', padding: '12px 16px', borderRadius: '10px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '1.18rem' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)', fontWeight: 600 }}>
-            <Clock size={18} color="var(--orange-primary)" /> Úl. Actualización:
+      <div style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', padding: '8px 10px', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.78rem' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--text-muted)', fontWeight: 600 }}>
+            <Clock size={13} color="var(--orange-primary)" /> Actualizado:
           </span>
-          <strong style={{ fontWeight: 800, color: '#ffffff', fontFamily: 'var(--font-mono)', fontSize: '1.32rem' }}>{project.lastUpdate}</strong>
+          <strong style={{ fontWeight: 800, color: '#ffffff', fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>{project.lastUpdate}</strong>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '1.18rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '8px' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#4ade80', fontWeight: 700 }}>
-            <Calendar size={18} color="#4ade80" /> Sig. Despliegue:
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.78rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '5px' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#4ade80', fontWeight: 700 }}>
+            <Calendar size={13} color="#4ade80" /> Despliegue:
           </span>
-          <strong style={{ fontWeight: 800, color: '#4ade80', fontFamily: 'var(--font-mono)', fontSize: '1.32rem' }}>{project.nextDeploy}</strong>
+          <strong style={{ fontWeight: 800, color: '#4ade80', fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>{project.nextDeploy}</strong>
         </div>
       </div>
     </div>
   );
 }
-
-
-
-

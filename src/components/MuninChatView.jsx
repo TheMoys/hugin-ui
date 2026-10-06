@@ -543,7 +543,7 @@ export default function MuninChatView({
         style={{
           background: 'var(--bg-header)',
           borderBottom: '1px solid var(--border-subtle)',
-          padding: '12px 16px',
+          padding: '8px 14px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -551,39 +551,39 @@ export default function MuninChatView({
           zIndex: 10
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div
             style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '10px',
+              width: '30px',
+              height: '30px',
+              borderRadius: '8px',
               background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '1.25rem',
-              boxShadow: '0 2px 10px rgba(2, 132, 199, 0.4)'
+              fontSize: '1.1rem',
+              boxShadow: '0 2px 8px rgba(2, 132, 199, 0.4)'
             }}
           >
             🦅
           </div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontWeight: 800, fontSize: '0.98rem', letterSpacing: '0.3px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontWeight: 800, fontSize: '0.9rem', letterSpacing: '0.2px' }}>
                 Munin Copilot
               </span>
               <span
                 style={{
                   display: 'inline-block',
-                  width: '8px',
-                  height: '8px',
+                  width: '7px',
+                  height: '7px',
                   borderRadius: '50%',
                   background: isMuninConnected ? '#22c55e' : '#f59e0b',
-                  boxShadow: isMuninConnected ? '0 0 8px #22c55e' : 'none'
+                  boxShadow: isMuninConnected ? '0 0 6px #22c55e' : 'none'
                 }}
               />
             </div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
               {isMuninConnected ? 'Conectado a FastAPI' : 'Reconectando con Munin...'}
             </div>
           </div>
@@ -771,11 +771,11 @@ export default function MuninChatView({
         style={{
           background: 'var(--bg-header)',
           borderTop: '1px solid var(--border-subtle)',
-          padding: '12px 16px',
+          padding: '8px 14px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '10px',
+          gap: '6px',
           flexShrink: 0,
           position: 'relative'
         }}
@@ -785,24 +785,24 @@ export default function MuninChatView({
           <div
             style={{
               position: 'absolute',
-              top: '-42px',
+              top: '-36px',
               background: '#ef4444',
               color: '#ffffff',
-              padding: '6px 18px',
-              borderRadius: '20px',
-              fontSize: '0.82rem',
+              padding: '4px 14px',
+              borderRadius: '16px',
+              fontSize: '0.75rem',
               fontWeight: 800,
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
+              gap: '6px',
               boxShadow: '0 4px 15px rgba(239, 68, 68, 0.5)',
               animation: 'pulse 1s infinite'
             }}
           >
             <span
               style={{
-                width: '8px',
-                height: '8px',
+                width: '7px',
+                height: '7px',
                 borderRadius: '50%',
                 background: '#ffffff'
               }}
@@ -818,7 +818,7 @@ export default function MuninChatView({
             alignItems: 'center',
             width: '100%',
             maxWidth: '680px',
-            gap: '10px'
+            gap: '8px'
           }}
         >
           {/* Input de texto fallback */}
@@ -844,9 +844,9 @@ export default function MuninChatView({
                 background: 'var(--bg-inner)',
                 border: '1px solid var(--border-subtle)',
                 color: 'var(--text-primary)',
-                padding: '12px 42px 12px 14px',
-                borderRadius: '14px',
-                fontSize: '0.92rem',
+                padding: '10px 38px 10px 12px',
+                borderRadius: '12px',
+                fontSize: '0.88rem',
                 outline: 'none',
                 boxSizing: 'border-box'
               }}
@@ -856,13 +856,13 @@ export default function MuninChatView({
               disabled={!inputText.trim() || isProcessing}
               style={{
                 position: 'absolute',
-                right: '8px',
+                right: '6px',
                 background: inputText.trim() ? 'var(--orange-primary)' : 'transparent',
                 border: 'none',
                 color: inputText.trim() ? '#ffffff' : 'var(--text-muted)',
-                width: '32px',
-                height: '32px',
-                borderRadius: '10px',
+                width: '28px',
+                height: '28px',
+                borderRadius: '8px',
                 cursor: inputText.trim() ? 'pointer' : 'default',
                 display: 'flex',
                 alignItems: 'center',
@@ -870,7 +870,7 @@ export default function MuninChatView({
                 transition: 'background 0.2s'
               }}
             >
-              <Send size={16} />
+              <Send size={14} />
             </button>
           </div>
 
@@ -882,22 +882,22 @@ export default function MuninChatView({
             disabled={isProcessing}
             title="Mantén presionado para hablar, suelta para enviar"
             style={{
-              width: '54px',
-              height: '54px',
+              width: '46px',
+              height: '46px',
               borderRadius: '50%',
               background: isRecording
                 ? '#ef4444'
                 : 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-              border: isRecording ? '3px solid #fecaca' : '2px solid rgba(255, 255, 255, 0.2)',
+              border: isRecording ? '2px solid #fecaca' : '2px solid rgba(255, 255, 255, 0.2)',
               color: '#ffffff',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: isProcessing ? 'not-allowed' : 'pointer',
               boxShadow: isRecording
-                ? '0 0 25px rgba(239, 68, 68, 0.8)'
-                : '0 4px 15px rgba(2, 132, 199, 0.45)',
-              transform: isRecording ? 'scale(1.12)' : 'scale(1)',
+                ? '0 0 20px rgba(239, 68, 68, 0.8)'
+                : '0 3px 12px rgba(2, 132, 199, 0.45)',
+              transform: isRecording ? 'scale(1.1)' : 'scale(1)',
               transition: 'transform 0.15s, background 0.2s, box-shadow 0.2s',
               touchAction: 'none',
               userSelect: 'none',
@@ -905,13 +905,13 @@ export default function MuninChatView({
               flexShrink: 0
             }}
           >
-            <Mic size={24} />
+            <Mic size={20} />
           </button>
         </div>
 
         {/* Guía inferior sutil */}
-        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textAlign: 'center' }}>
-          Pulsa y mantén el botón azul para hablar con Munin
+        <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textAlign: 'center' }}>
+          Mantén presionado el botón azul para hablar
         </div>
       </footer>
 

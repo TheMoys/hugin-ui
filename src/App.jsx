@@ -197,43 +197,32 @@ export default function App() {
           </div>
 
           {/* Right Header Status Section */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {/* Munin Sync Status Badge */}
             <div
               onClick={() => setIsEditModalOpen(true)}
               title="Sincronización Huginn & Muninn. Haz clic para editar manualmente."
-              style={{
-                background: 'var(--bg-inner)',
-                border: '1px solid var(--border-subtle)',
-                padding: '8px 14px',
-                borderRadius: '10px',
-                fontSize: '0.9rem',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                transition: 'border-color 0.2s'
-              }}
+              className="header-badge"
             >
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: '1.25rem' }}>🦅</span>
+                <span style={{ fontSize: '1.1rem' }}>🦅</span>
                 <span style={{
                   position: 'absolute',
                   bottom: -1,
                   right: -3,
-                  width: 8,
-                  height: 8,
+                  width: 7,
+                  height: 7,
                   borderRadius: '50%',
                   background: isMuninConnected ? '#22c55e' : '#f59e0b',
-                  boxShadow: isMuninConnected ? '0 0 8px #22c55e' : 'none'
+                  boxShadow: isMuninConnected ? '0 0 6px #22c55e' : 'none'
                 }}></span>
               </div>
               <div>
-                <div style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.92rem', lineHeight: 1.1 }}>
-                  Munin Sync
+                <div style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.82rem', lineHeight: 1.1 }}>
+                  Munin
                 </div>
-                <div style={{ color: isMuninConnected ? '#4ade80' : 'var(--text-muted)', fontSize: '0.78rem', marginTop: '2px', fontWeight: 600 }}>
-                  {isMuninConnected ? 'En línea (PWA / API)' : 'Modo Local'}
+                <div className="hide-compact" style={{ color: isMuninConnected ? '#4ade80' : 'var(--text-muted)', fontSize: '0.72rem', marginTop: '1px', fontWeight: 600 }}>
+                  {isMuninConnected ? 'En línea' : 'Modo Local'}
                 </div>
               </div>
             </div>
@@ -246,44 +235,30 @@ export default function App() {
                 background: 'var(--bg-inner)',
                 border: '1px solid var(--border-subtle)',
                 color: 'var(--text-secondary)',
-                padding: '10px 12px',
-                borderRadius: '10px',
+                padding: '6px 8px',
+                borderRadius: '8px',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                fontSize: '0.88rem',
-                fontWeight: 600
+                justifyContent: 'center'
               }}
             >
-              <Settings size={18} color="var(--orange-primary)" />
+              <Settings size={16} color="var(--orange-primary)" />
             </button>
 
             {/* Projection Status Badge (visible en modo TV) */}
             {activeTab !== 'copilot' && (
-              <div
-                style={{
-                  background: 'var(--bg-inner)',
-                  border: '1px solid var(--border-subtle)',
-                  padding: '8px 16px',
-                  borderRadius: '10px',
-                  fontSize: '0.95rem',
-                  color: 'var(--text-secondary)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px'
-                }}
-              >
+              <div className="header-badge">
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Monitor size={20} color="var(--orange-primary)" />
-                  <span style={{ position: 'absolute', top: -1, right: -1, width: 7, height: 7, borderRadius: '50%', background: 'var(--orange-primary)' }}></span>
+                  <Monitor size={16} color="var(--orange-primary)" />
+                  <span style={{ position: 'absolute', top: -1, right: -1, width: 6, height: 6, borderRadius: '50%', background: 'var(--orange-primary)' }}></span>
                 </div>
                 <div>
-                  <div style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.95rem', lineHeight: 1.1 }}>
-                    Proyección TV
+                  <div className="hide-compact" style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.82rem', lineHeight: 1.1 }}>
+                    TV
                   </div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '5px', marginTop: '2px' }}>
-                    <Clock size={13} color="var(--orange-primary)" /> Rotación: <strong style={{ color: 'var(--orange-primary)', fontFamily: 'var(--font-mono)' }}>{slideTimer}s</strong>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Clock size={11} color="var(--orange-primary)" /> <strong style={{ color: 'var(--orange-primary)', fontFamily: 'var(--font-mono)' }}>{slideTimer}s</strong>
                   </div>
                 </div>
               </div>
