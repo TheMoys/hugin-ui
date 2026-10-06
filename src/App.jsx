@@ -1,16 +1,24 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Flame, LayoutGrid, Activity, Monitor, Clock, Settings, RefreshCw } from 'lucide-react';
+import { Flame, LayoutGrid, Activity, Monitor, Clock, Settings, RefreshCw, Bot } from 'lucide-react';
 import FenixPlanning from './components/FenixPlanning';
 import ProjectsBoard from './components/ProjectsBoard';
+import MuninChatView from './components/MuninChatView';
 import EditDashboardModal from './components/EditDashboardModal';
 import { INITIAL_PROJECTS, INITIAL_REVIEW, INITIAL_SPRINT_GOAL } from './data/initialData';
 
-// URL del backend de Munin Assistant (soporta localhost, IP de red local o dominio en la nube)
+// URL del backend de Munin Assistant (soporta localhost, IP de red local o proxy Nginx)
 const MUNIN_API_URL = import.meta.env.VITE_MUNIN_API_URL || 
   (typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.hostname}:8088` : 'http://localhost:8088');
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('fenix');
+  // Pestaña inicial: 'fenix' para TV y dashboard ejecutivo, 'copilot' si se solicita explícitamente por query param
+  const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('tab') === 'copilot') return 'copilot';
+    }
+    return 'fenix';
+  });
   const [slideTimer, setSlideTimer] = useState(15);
 
   // Estados dinámicos sincronizados con Munin Assistant
@@ -47,20 +55,22 @@ export default function App() {
     return () => clearInterval(interval);
   }, [fetchDashboardData]);
 
-  // Rotación automática entre pestañas cada 15 segundos
+  // Rotación automática entre pestañas cada 15 segundos (solo activo en fenix o projects)
   useEffect(() => {
+    if (activeTab === 'copilot') return;
     const interval = setInterval(() => {
       setSlideTimer(prev => prev - 1);
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [activeTab]);
 
   useEffect(() => {
+    if (activeTab === 'copilot') return;
     if (slideTimer <= 0) {
       setActiveTab(prev => (prev === 'fenix' ? 'projects' : 'fenix'));
       setSlideTimer(15);
     }
-  }, [slideTimer]);
+  }, [slideTimer, activeTab]);
 
   const handleSaveModal = async (updatedData) => {
     try {
@@ -162,6 +172,12 @@ export default function App() {
             >
               <LayoutGrid size={20} /> Proyectos Activos ({projects.length})
             </button>
+            <button
+              className={`tab-btn ${activeTab === 'copilot' ? 'active' : ''}`}
+              onClick={() => { setActiveTab('copilot'); }}
+            >
+              <Bot size={20} /> Munin Copilot
+            </button>
           </div>
 
           {/* Right Header Status Section */}
@@ -258,11 +274,17 @@ export default function App() {
         </header>
 
         {/* Board Body Content */}
-        <main className="dashboard-content">
+        <main className="dashboard-content" style={activeTab === 'copilot' ? { padding: '14px 18px', overflow: 'hidden' } : {}}>
           {activeTab === 'fenix' ? (
             <FenixPlanning review={review} sprintGoal={sprintGoal} />
-          ) : (
+          ) : activeTab === 'projects' ? (
             <ProjectsBoard projects={projects} />
+          ) : (
+            <MuninChatView
+              apiUrl={MUNIN_API_URL}
+              isMuninConnected={isMuninConnected}
+              onSwitchToTvMode={() => { setActiveTab('fenix'); setSlideTimer(15); }}
+            />
           )}
         </main>
       </div>

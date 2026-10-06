@@ -6,4 +6,5 @@ services:
     container_name: hugin-ui
     ports:
       - "8096:80"
+      - "8443:443"
     restart: always
