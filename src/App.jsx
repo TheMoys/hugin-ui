@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Flame, LayoutGrid, Activity, Monitor, Clock, Settings, RefreshCw, Radio } from 'lucide-react';
+import { Flame, LayoutGrid, Activity, Monitor, Clock, Settings, Radio } from 'lucide-react';
 import FenixPlanning from './components/FenixPlanning';
 import ProjectsBoard from './components/ProjectsBoard';
 import EditDashboardModal from './components/EditDashboardModal';
@@ -14,16 +14,15 @@ export default function App() {
   const queryParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
   const isTvLocked = queryParams?.get('mode') === 'tv';
 
-  // En móvil o parámetro ?view=copilot abre directamente la consola del asistente
-  const [currentView, setCurrentView] = useState(() => {
-    if (isTvLocked) return 'tv';
-    if (queryParams?.get('view') === 'tv') return 'tv';
-    if (queryParams?.get('view') === 'copilot') return 'copilot';
-    if (typeof window !== 'undefined' && window.innerWidth < 850) return 'copilot';
-    return 'tv';
+  // Si ?mode=tv está presente, la TV inicia en modo proyección ('fenix').
+  // En cualquier otro caso (móvil, app PWA, PC), arranca de forma predeterminada en 'copilot' (Munin Assistant).
+  const [activeTab, setActiveTab] = useState(() => {
+    if (isTvLocked) return 'fenix';
+    if (queryParams?.get('tab') === 'fenix') return 'fenix';
+    if (queryParams?.get('tab') === 'projects') return 'projects';
+    return 'copilot';
   });
 
-  const [activeTab, setActiveTab] = useState('fenix');
   const [slideTimer, setSlideTimer] = useState(15);
 
   // Estados dinámicos sincronizados con Munin Assistant
@@ -47,7 +46,7 @@ export default function App() {
         if (json.data.projects && Array.isArray(json.data.projects)) setProjects(json.data.projects);
         setIsMuninConnected(true);
       }
-    } catch (err) {
+    } catch {
       // Fallback silencioso a datos locales
       setIsMuninConnected(false);
     }
@@ -60,20 +59,22 @@ export default function App() {
     return () => clearInterval(interval);
   }, [fetchDashboardData]);
 
-  // Rotación automática entre pestañas cada 15 segundos
+  // Rotación automática entre pestañas cada 15 segundos (solo en vistas de proyección TV)
   useEffect(() => {
+    if (activeTab === 'copilot') return; // En Copilot no rota para permitir chatear y dictar
     const interval = setInterval(() => {
       setSlideTimer(prev => prev - 1);
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [activeTab]);
 
   useEffect(() => {
+    if (activeTab === 'copilot') return;
     if (slideTimer <= 0) {
       setActiveTab(prev => (prev === 'fenix' ? 'projects' : 'fenix'));
       setSlideTimer(15);
     }
-  }, [slideTimer]);
+  }, [slideTimer, activeTab]);
 
   const handleSaveModal = async (updatedData) => {
     try {
@@ -90,12 +91,11 @@ export default function App() {
           if (json.data.projects) setProjects(json.data.projects);
         }
       } else {
-        // Guardado local directo si la API no está accesible
         if (updatedData.review) setReview(updatedData.review);
         if (updatedData.sprintGoal) setSprintGoal(updatedData.sprintGoal);
         if (updatedData.projects) setProjects(updatedData.projects);
       }
-    } catch (err) {
+    } catch {
       if (updatedData.review) setReview(updatedData.review);
       if (updatedData.sprintGoal) setSprintGoal(updatedData.sprintGoal);
       if (updatedData.projects) setProjects(updatedData.projects);
@@ -127,33 +127,22 @@ export default function App() {
 
   const progressPercent = Math.min(100, Math.max(0, ((15 - slideTimer) / 15) * 100));
 
-  if (currentView === 'copilot') {
-    return (
-      <div className="dashboard-frame">
-        <MuninChatView
-          apiUrl={MUNIN_API_URL}
-          isMuninConnected={isMuninConnected}
-          onSwitchToTvMode={() => setCurrentView('tv')}
-          isTvAvailable={true}
-        />
-      </div>
-    );
-  }
-
   return (
     <div className="dashboard-frame">
       <div className="dashboard-main">
-        {/* Sleek Top Progress Line */}
-        <div style={{ width: '100%', height: '3px', background: 'rgba(255,255,255,0.05)', overflow: 'hidden' }}>
-          <div
-            style={{
-              height: '100%',
-              width: `${progressPercent}%`,
-              background: 'var(--orange-primary)',
-              transition: 'width 1s linear'
-            }}
-          ></div>
-        </div>
+        {/* Sleek Top Progress Line (solo en modo rotación TV) */}
+        {activeTab !== 'copilot' && (
+          <div style={{ width: '100%', height: '3px', background: 'rgba(255,255,255,0.05)', overflow: 'hidden' }}>
+            <div
+              style={{
+                height: '100%',
+                width: `${progressPercent}%`,
+                background: 'var(--orange-primary)',
+                transition: 'width 1s linear'
+              }}
+            ></div>
+          </div>
+        )}
 
         {/* Executive Header */}
         <header className="dashboard-header">
@@ -169,13 +158,30 @@ export default function App() {
                 </span>
               </div>
               <div className="brand-subtitle">
-                Panel Operativo y de Proyectos
+                Panel Operativo y Copiloto de IA
               </div>
             </div>
           </div>
 
-          {/* Nav Tabs */}
+          {/* Nav Tabs Principales */}
           <div className="nav-tabs">
+            {/* Pestaña Munin Copilot (visible en móvil y PC; oculta en modo ?mode=tv para la sala) */}
+            {!isTvLocked && (
+              <button
+                className={`tab-btn ${activeTab === 'copilot' ? 'active' : ''}`}
+                onClick={() => setActiveTab('copilot')}
+                style={{
+                  border: activeTab === 'copilot' ? '1px solid #38bdf8' : '1px solid rgba(56, 189, 248, 0.3)',
+                  color: activeTab === 'copilot' ? '#ffffff' : '#38bdf8',
+                  background: activeTab === 'copilot' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'rgba(0, 117, 168, 0.1)',
+                  fontWeight: 800,
+                  boxShadow: activeTab === 'copilot' ? '0 0 12px rgba(2, 132, 199, 0.5)' : 'none'
+                }}
+              >
+                <span style={{ fontSize: '1.25rem' }}>🦅</span> Munin Copilot
+              </button>
+            )}
+
             <button
               className={`tab-btn ${activeTab === 'fenix' ? 'active' : ''}`}
               onClick={() => { setActiveTab('fenix'); setSlideTimer(15); }}
@@ -192,30 +198,6 @@ export default function App() {
 
           {/* Right Header Status Section */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            {/* Munin Copilot Switch Button (disponible si no está bloqueado en TV) */}
-            {!isTvLocked && (
-              <button
-                onClick={() => setCurrentView('copilot')}
-                title="Abrir Munin Copilot con asistente de voz y chat"
-                style={{
-                  background: 'rgba(0, 117, 168, 0.22)',
-                  border: '1px solid var(--orange-border)',
-                  color: '#38bdf8',
-                  padding: '8px 14px',
-                  borderRadius: '10px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontSize: '0.9rem',
-                  fontWeight: 700
-                }}
-              >
-                <span style={{ fontSize: '1.25rem' }}>🦅</span>
-                <span>Copilot</span>
-              </button>
-            )}
-
             {/* Munin Sync Status Badge */}
             <div
               onClick={() => setIsEditModalOpen(true)}
@@ -251,7 +233,7 @@ export default function App() {
                   Munin Sync
                 </div>
                 <div style={{ color: isMuninConnected ? '#4ade80' : 'var(--text-muted)', fontSize: '0.78rem', marginTop: '2px', fontWeight: 600 }}>
-                  {isMuninConnected ? 'En línea (WhatsApp)' : 'Modo Local'}
+                  {isMuninConnected ? 'En línea (PWA / API)' : 'Modo Local'}
                 </div>
               </div>
             </div>
@@ -277,39 +259,57 @@ export default function App() {
               <Settings size={18} color="var(--orange-primary)" />
             </button>
 
-            {/* Projection Status Badge */}
-            <div
-              style={{
-                background: 'var(--bg-inner)',
-                border: '1px solid var(--border-subtle)',
-                padding: '8px 16px',
-                borderRadius: '10px',
-                fontSize: '0.95rem',
-                color: 'var(--text-secondary)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
-              }}
-            >
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Monitor size={20} color="var(--orange-primary)" />
-                <span style={{ position: 'absolute', top: -1, right: -1, width: 7, height: 7, borderRadius: '50%', background: 'var(--orange-primary)' }}></span>
-              </div>
-              <div>
-                <div style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.95rem', lineHeight: 1.1 }}>
-                  Proyección TV
+            {/* Projection Status Badge (visible en modo TV) */}
+            {activeTab !== 'copilot' && (
+              <div
+                style={{
+                  background: 'var(--bg-inner)',
+                  border: '1px solid var(--border-subtle)',
+                  padding: '8px 16px',
+                  borderRadius: '10px',
+                  fontSize: '0.95rem',
+                  color: 'var(--text-secondary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}
+              >
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Monitor size={20} color="var(--orange-primary)" />
+                  <span style={{ position: 'absolute', top: -1, right: -1, width: 7, height: 7, borderRadius: '50%', background: 'var(--orange-primary)' }}></span>
                 </div>
-                <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '5px', marginTop: '2px' }}>
-                  <Clock size={13} color="var(--orange-primary)" /> Rotación: <strong style={{ color: 'var(--orange-primary)', fontFamily: 'var(--font-mono)' }}>{slideTimer}s</strong>
+                <div>
+                  <div style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.95rem', lineHeight: 1.1 }}>
+                    Proyección TV
+                  </div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '5px', marginTop: '2px' }}>
+                    <Clock size={13} color="var(--orange-primary)" /> Rotación: <strong style={{ color: 'var(--orange-primary)', fontFamily: 'var(--font-mono)' }}>{slideTimer}s</strong>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </header>
 
         {/* Board Body Content */}
-        <main className="dashboard-content">
-          {activeTab === 'fenix' ? (
+        <main
+          className="dashboard-content"
+          style={{
+            overflow: activeTab === 'copilot' ? 'hidden' : 'auto',
+            padding: activeTab === 'copilot' ? 0 : undefined,
+            height: 'calc(100vh - 72px)',
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
+          {activeTab === 'copilot' ? (
+            <MuninChatView
+              apiUrl={MUNIN_API_URL}
+              isMuninConnected={isMuninConnected}
+              onSwitchToTvMode={() => { setActiveTab('fenix'); setSlideTimer(15); }}
+              isTvAvailable={true}
+            />
+          ) : activeTab === 'fenix' ? (
             <FenixPlanning review={review} sprintGoal={sprintGoal} />
           ) : (
             <ProjectsBoard projects={projects} />
