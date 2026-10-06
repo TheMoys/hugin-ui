@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Flame, LayoutGrid, Activity, Monitor, Clock, Settings, RefreshCw } from 'lucide-react';
+import { Flame, LayoutGrid, Activity, Monitor, Clock, Settings, RefreshCw, Radio } from 'lucide-react';
 import FenixPlanning from './components/FenixPlanning';
 import ProjectsBoard from './components/ProjectsBoard';
 import EditDashboardModal from './components/EditDashboardModal';
+import MuninChatView from './components/MuninChatView';
 import { INITIAL_PROJECTS, INITIAL_REVIEW, INITIAL_SPRINT_GOAL } from './data/initialData';
 
 // URL del backend de Munin Assistant (soporta localhost, IP de red local o dominio en la nube)
@@ -10,6 +11,18 @@ const MUNIN_API_URL = import.meta.env.VITE_MUNIN_API_URL ||
   (typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.hostname}:8088` : 'http://localhost:8088');
 
 export default function App() {
+  const queryParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const isTvLocked = queryParams?.get('mode') === 'tv';
+
+  // En móvil o parámetro ?view=copilot abre directamente la consola del asistente
+  const [currentView, setCurrentView] = useState(() => {
+    if (isTvLocked) return 'tv';
+    if (queryParams?.get('view') === 'tv') return 'tv';
+    if (queryParams?.get('view') === 'copilot') return 'copilot';
+    if (typeof window !== 'undefined' && window.innerWidth < 850) return 'copilot';
+    return 'tv';
+  });
+
   const [activeTab, setActiveTab] = useState('fenix');
   const [slideTimer, setSlideTimer] = useState(15);
 
@@ -114,6 +127,19 @@ export default function App() {
 
   const progressPercent = Math.min(100, Math.max(0, ((15 - slideTimer) / 15) * 100));
 
+  if (currentView === 'copilot') {
+    return (
+      <div className="dashboard-frame">
+        <MuninChatView
+          apiUrl={MUNIN_API_URL}
+          isMuninConnected={isMuninConnected}
+          onSwitchToTvMode={() => setCurrentView('tv')}
+          isTvAvailable={true}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-frame">
       <div className="dashboard-main">
@@ -166,6 +192,30 @@ export default function App() {
 
           {/* Right Header Status Section */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {/* Munin Copilot Switch Button (disponible si no está bloqueado en TV) */}
+            {!isTvLocked && (
+              <button
+                onClick={() => setCurrentView('copilot')}
+                title="Abrir Munin Copilot con asistente de voz y chat"
+                style={{
+                  background: 'rgba(0, 117, 168, 0.22)',
+                  border: '1px solid var(--orange-border)',
+                  color: '#38bdf8',
+                  padding: '8px 14px',
+                  borderRadius: '10px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '0.9rem',
+                  fontWeight: 700
+                }}
+              >
+                <span style={{ fontSize: '1.25rem' }}>🦅</span>
+                <span>Copilot</span>
+              </button>
+            )}
+
             {/* Munin Sync Status Badge */}
             <div
               onClick={() => setIsEditModalOpen(true)}
