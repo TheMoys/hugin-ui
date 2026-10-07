@@ -42,7 +42,7 @@ export const INITIAL_PROJECTS = [
     status: 'en_desarrollo',
     lastUpdate: '31/06/2026',
     nextDeploy: '02/10/2026',
-    color: 'purple',
+    color: 'blue',
     rotation: -1.5,
   },
   {
