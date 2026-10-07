@@ -53,7 +53,7 @@ export const INITIAL_PROJECTS = [
     status: 'soporte',
     lastUpdate: '06/2025',
     nextDeploy: '12/2026',
-    color: 'purple',
+    color: 'blue',
     rotation: 1.2,
   },
   {
