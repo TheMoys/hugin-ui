@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bus, Clock, MapPin, Wifi } from 'lucide-react';
+import { Bus, Clock, MapPin, Wifi, RefreshCw } from 'lucide-react';
 
 // Horarios oficiales extraídos directamente del Libro General del TUS Santander vigente
 // Parada 488: PCTCAN - UNEATLANTICO (Cabecera L1)
@@ -69,7 +69,7 @@ const L24C1_454 = [
   '19:16', '19:46', '20:16', '20:46', '21:16', '21:46', '22:16', '22:46'
 ];
 
-// Cálculo exacto del tiempo restante hasta la próxima y segunda salida programada
+// Cálculo de estimación programada como fallback cuando el feed GPS municipal no tiene registros
 const calculateScheduledDepartures = (now = new Date()) => {
   const day = now.getDay(); // 0: Dom, 6: Sab
   const isSunday = day === 0;
@@ -93,7 +93,6 @@ const calculateScheduledDepartures = (now = new Date()) => {
     }
 
     if (upcoming.length === 0) {
-      // Si ya pasó el último del día, muestra el primer servicio de la mañana siguiente
       const first = timetable[0];
       const [fh, fm] = first.split(':').map(Number);
       const diffTomorrow = (24 * 60 - nowMinutes) + (fh * 60 + fm);
@@ -130,7 +129,8 @@ const calculateScheduledDepartures = (now = new Date()) => {
         nextTime: l1_488.nextTime,
         secondMinutes: l1_488.secondMinutes,
         secondTime: l1_488.secondTime,
-        distanceMeter: 850
+        distanceMeter: null,
+        isRealGps: false
       }
     ],
     '454': [
@@ -141,7 +141,8 @@ const calculateScheduledDepartures = (now = new Date()) => {
         nextTime: l1_454.nextTime,
         secondMinutes: l1_454.secondMinutes,
         secondTime: l1_454.secondTime,
-        distanceMeter: 1510
+        distanceMeter: null,
+        isRealGps: false
       },
       {
         line: '13',
@@ -150,7 +151,8 @@ const calculateScheduledDepartures = (now = new Date()) => {
         nextTime: l13_454.nextTime,
         secondMinutes: l13_454.secondMinutes,
         secondTime: l13_454.secondTime,
-        distanceMeter: 4200
+        distanceMeter: null,
+        isRealGps: false
       },
       {
         line: '24C1',
@@ -159,7 +161,8 @@ const calculateScheduledDepartures = (now = new Date()) => {
         nextTime: l24c1_454.nextTime,
         secondMinutes: l24c1_454.secondMinutes,
         secondTime: l24c1_454.secondTime,
-        distanceMeter: 2900
+        distanceMeter: null,
+        isRealGps: false
       }
     ]
   };
@@ -170,11 +173,13 @@ export default function BusTUSWidget() {
   const [loading, setLoading] = useState(false);
   const [isLiveGps, setIsLiveGps] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [countdown, setCountdown] = useState(30);
 
   const fetchTUSData = async () => {
     setLoading(true);
     const now = new Date();
     try {
+      console.log(`[TUS Polling ${now.toLocaleTimeString()}] Consultando API oficial de Santander...`);
       let response;
       const proxyUrl = '/api-tus/api/rest/datasets/control_flotas_estimaciones.json';
       const datosUrl = '/api-tus/api/datos/control_flotas_estimaciones.json';
@@ -182,10 +187,12 @@ export default function BusTUSWidget() {
 
       try {
         response = await fetch(proxyUrl);
-      } catch {
+      } catch (err) {
+        console.warn('[TUS Polling] Error en proxyUrl:', err);
         try {
           response = await fetch(datosUrl);
-        } catch {
+        } catch (err2) {
+          console.warn('[TUS Polling] Error en datosUrl:', err2);
           try {
             response = await fetch(directUrl);
           } catch {}
@@ -195,12 +202,14 @@ export default function BusTUSWidget() {
       if (response && response.ok) {
         const data = await response.json();
         const items = data.resources || [];
+        console.log(`[TUS Polling] Respuesta de API recibida. Total items en feed: ${items.length}`);
 
         // Filtrar paradas 454 y 488 si la API devuelve telemetría GPS
         const stop454Items = items.filter(i => String(i['ayto:paradaId'] || '').trim() === '454');
         const stop488Items = items.filter(i => String(i['ayto:paradaId'] || '').trim() === '488');
 
         if (stop454Items.length > 0 || stop488Items.length > 0) {
+          console.log(`[TUS Polling] Telemetría GPS en tiempo real activa! (488: ${stop488Items.length}, 454: ${stop454Items.length})`);
           const mapItems = (list) => {
             if (!list || list.length === 0) return null;
             return list.slice(0, 6).map(item => {
@@ -215,7 +224,8 @@ export default function BusTUSWidget() {
                 nextTime: null,
                 secondMinutes: mins2 > 0 ? mins2 : null,
                 secondTime: null,
-                distanceMeter: parseInt(item['ayto:distancia1'] || '0', 10)
+                distanceMeter: parseInt(item['ayto:distancia1'] || '0', 10),
+                isRealGps: true
               };
             });
           };
@@ -230,7 +240,11 @@ export default function BusTUSWidget() {
           setIsLiveGps(true);
           setLastUpdated(now);
           return;
+        } else {
+          console.log('[TUS Polling] La API no incluye registros GPS para 454/488 en este instante. Aplicando sincronización horaria.');
         }
+      } else {
+        console.warn(`[TUS Polling] API devolvió status ${response?.status || 'desconocido'}`);
       }
 
       // Si la API municipal no tiene eventos GPS en este momento,
@@ -239,20 +253,32 @@ export default function BusTUSWidget() {
       setStopData(calculated);
       setIsLiveGps(false);
       setLastUpdated(now);
-    } catch {
+    } catch (err) {
+      console.error('[TUS Polling] Error en llamada a la API:', err);
       const calculated = calculateScheduledDepartures(now);
       setStopData(calculated);
       setIsLiveGps(false);
       setLastUpdated(now);
     } finally {
       setLoading(false);
+      setCountdown(30);
     }
   };
 
   useEffect(() => {
     fetchTUSData();
-    // Consulta y sincronización cada 30 segundos
-    const timer = setInterval(fetchTUSData, 30000);
+
+    // Cuenta regresiva visible de 30 segundos
+    const timer = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          fetchTUSData();
+          return 30;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
     return () => clearInterval(timer);
   }, []);
 
@@ -284,19 +310,37 @@ export default function BusTUSWidget() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--orange-subtle)', border: '1px solid var(--orange-border)', padding: '6px 14px', borderRadius: '20px' }}>
+          <button
+            onClick={() => { setCountdown(30); fetchTUSData(); }}
+            title="Forzar consulta inmediata a la API"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: 'var(--orange-subtle)',
+              border: '1px solid var(--orange-border)',
+              padding: '6px 14px',
+              borderRadius: '20px',
+              cursor: 'pointer',
+              color: 'var(--orange-primary)'
+            }}
+          >
             <div className="bus-live-pulse"></div>
-            <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--orange-primary)', letterSpacing: '0.04em' }}>
-              EN VIVO
+            <span style={{ fontSize: '0.88rem', fontWeight: 700, letterSpacing: '0.04em' }}>
+              {isLiveGps ? 'GPS EN VIVO' : 'EN VIVO'}
             </span>
-          </div>
+            <RefreshCw size={13} className={loading ? 'spin-anim' : ''} style={{ marginLeft: '4px', opacity: 0.8 }} />
+          </button>
         </div>
 
         {/* Sync Info */}
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.92rem', color: 'var(--text-muted)', fontWeight: 500, marginBottom: '12px' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Wifi size={15} color={isLiveGps ? "#4ade80" : "var(--orange-primary)"} />
-            {isLiveGps ? 'API TUS Santander GPS (30s)' : 'TUS Santander Sincronizado (30s)'}
+            {isLiveGps ? 'API TUS Santander GPS' : 'API TUS Polling'}
+            <span style={{ fontSize: '0.82rem', fontFamily: 'var(--font-mono)', opacity: 0.85, background: 'rgba(255,255,255,0.06)', padding: '1px 6px', borderRadius: '4px' }}>
+              {countdown}s
+            </span>
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-mono)' }}>
             <Clock size={15} /> {lastUpdated.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
@@ -322,11 +366,15 @@ export default function BusTUSWidget() {
                     <div style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                       {item.destination}
                     </div>
-                    {item.nextTime && (
+                    {item.isRealGps && item.distanceMeter ? (
+                      <div style={{ fontSize: '0.82rem', color: '#4ade80', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+                        📍 Telemetría GPS: a {item.distanceMeter}m
+                      </div>
+                    ) : item.nextTime ? (
                       <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
                         Paso programado: <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{item.nextTime}</span>
                       </div>
-                    )}
+                    ) : null}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
@@ -363,11 +411,15 @@ export default function BusTUSWidget() {
                     <div style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                       {item.destination}
                     </div>
-                    {item.nextTime && (
+                    {item.isRealGps && item.distanceMeter ? (
+                      <div style={{ fontSize: '0.82rem', color: '#4ade80', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+                        📍 Telemetría GPS: a {item.distanceMeter}m
+                      </div>
+                    ) : item.nextTime ? (
                       <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
                         Paso programado: <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{item.nextTime}</span>
                       </div>
-                    )}
+                    ) : null}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
