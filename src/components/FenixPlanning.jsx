@@ -4,10 +4,8 @@ import BusTUSWidget from './BusTUSWidget';
 import WeatherWidget from './WeatherWidget';
 import { INITIAL_REVIEW, INITIAL_SPRINT_GOAL } from '../data/initialData';
 
-export default function FenixPlanning() {
-  const [review] = useState(INITIAL_REVIEW);
-  const [sprintGoal] = useState(INITIAL_SPRINT_GOAL);
-  const [timeLeft, setTimeLeft] = useState({ days: 8, hours: 2, minutes: 53, seconds: 38 });
+export default function FenixPlanning({ review = INITIAL_REVIEW, sprintGoal = INITIAL_SPRINT_GOAL }) {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -121,7 +119,7 @@ export default function FenixPlanning() {
 
         <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '10px', fontSize: '0.95rem', color: 'var(--text-muted)', fontWeight: 600, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span>Estado del Sprint:</span>
-          <span style={{ color: 'var(--orange-primary)', fontWeight: 800 }}>En Progreso (Semana 2)</span>
+          <span style={{ color: 'var(--orange-primary)', fontWeight: 800 }}>{review.status || 'En Progreso (Semana 2)'}</span>
         </div>
       </div>
 
