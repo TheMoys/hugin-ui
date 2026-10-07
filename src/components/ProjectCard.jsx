@@ -43,9 +43,9 @@ export default function ProjectCard({ project }) {
           <span style={{ 
             fontFamily: 'var(--font-mono)', 
             fontSize: '1.25rem', 
-            color: (project.code === 'NUTRIX' || project.code === 'MLS') ? '#c084fc' : 'var(--orange-bright)', 
-            background: (project.code === 'NUTRIX' || project.code === 'MLS') ? 'rgba(168, 85, 247, 0.2)' : 'var(--orange-subtle)', 
-            border: (project.code === 'NUTRIX' || project.code === 'MLS') ? '1px solid #c084fc' : '1px solid var(--orange-border)', 
+            color: 'var(--orange-bright)', 
+            background: 'var(--orange-subtle)', 
+            border: '1px solid var(--orange-border)', 
             padding: '4px 14px', 
             borderRadius: '6px', 
             fontWeight: 800 
