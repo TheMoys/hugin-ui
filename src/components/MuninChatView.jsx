@@ -943,15 +943,11 @@ export default function MuninChatView({
         alignItems: 'center',
         gap: '10px'
       }}>
-        {/* Botón Walkie-Talkie Push-to-Talk y Tap-to-Talk */}
+        {/* Botón Tap-to-Record / Tap-to-Send (Un toque para grabar, un toque para enviar) */}
         <button
           type="button"
           onClick={isRecording ? stopRecordingAudio : startRecordingAudio}
-          onMouseDown={startRecordingAudio}
-          onMouseUp={stopRecordingAudio}
-          onTouchStart={startRecordingAudio}
-          onTouchEnd={stopRecordingAudio}
-          title={isRecording ? "Pulsar para Enviar" : "Walkie-Talkie: Pulsa o mantén presionado para hablar"}
+          title={isRecording ? "Toque para enviar nota de voz" : "Toque para empezar a grabar voz"}
           style={{
             width: '46px',
             height: '46px',
@@ -965,10 +961,10 @@ export default function MuninChatView({
             cursor: 'pointer',
             flexShrink: 0,
             transition: 'all 0.15s ease',
-            boxShadow: isRecording ? '0 0 16px rgba(239, 68, 68, 0.6)' : 'none'
+            boxShadow: isRecording ? '0 0 16px rgba(239, 68, 68, 0.7)' : 'none'
           }}
         >
-          {isRecording ? <Square size={20} /> : <Mic size={22} />}
+          {isRecording ? <Send size={20} /> : <Mic size={22} />}
         </button>
 
         {/* Input de texto */}
@@ -982,7 +978,7 @@ export default function MuninChatView({
               handleSendMessage();
             }
           }}
-          placeholder={isRecording ? "Grabando voz..." : "Escribe un mensaje o mantén el micro para hablar..."}
+          placeholder={isRecording ? "🔴 Grabando... pulsa el botón rojo para enviar" : "Escribe un mensaje o pulsa el micro para hablar..."}
           disabled={isProcessing || isRecording}
           style={{
             flex: 1,
