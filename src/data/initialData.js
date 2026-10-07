@@ -42,7 +42,7 @@ export const INITIAL_PROJECTS = [
     status: 'en_desarrollo',
     lastUpdate: '31/06/2026',
     nextDeploy: '02/10/2026',
-    color: 'mint',
+    color: 'purple',
     rotation: -1.5,
   },
   {
@@ -53,7 +53,7 @@ export const INITIAL_PROJECTS = [
     status: 'soporte',
     lastUpdate: '06/2025',
     nextDeploy: '12/2026',
-    color: 'blue',
+    color: 'purple',
     rotation: 1.2,
   },
   {
