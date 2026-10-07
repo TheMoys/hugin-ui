@@ -2,12 +2,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Flame, LayoutGrid, Activity, Monitor, Clock, Settings, RefreshCw, Bot } from 'lucide-react';
 import FenixPlanning from './components/FenixPlanning';
 import ProjectsBoard from './components/ProjectsBoard';
+import Fantasmometro from './components/Fantasmometro';
 import MuninChatView from './components/MuninChatView';
 import EditDashboardModal from './components/EditDashboardModal';
 import { INITIAL_PROJECTS, INITIAL_REVIEW, INITIAL_SPRINT_GOAL } from './data/initialData';
 
 // URL del backend de Munin Assistant (soporta localhost, IP de red local o proxy Nginx)
-const MUNIN_API_URL = import.meta.env.VITE_MUNIN_API_URL || 
+const MUNIN_API_URL = import.meta.env.VITE_MUNIN_API_URL ||
   (typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.hostname}:8088` : 'http://localhost:8088');
 
 export default function App() {
@@ -287,6 +288,8 @@ export default function App() {
             />
           )}
         </main>
+
+        <Fantasmometro />
       </div>
 
       {/* Quick Edit Modal */}

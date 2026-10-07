@@ -7,7 +7,7 @@ export default function ProjectsBoard({ projects }) {
   const supportCount = projects.filter(p => p.status === 'soporte').length;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', height: '100%' }}>
+    <div className="tab-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '16px', height: '100%' }}>
       {/* KPI Metrics Summary Bar - Completely Horizontal */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px' }}>
         <div className="dash-card" style={{ padding: '10px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>

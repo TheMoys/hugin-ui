@@ -1,6 +1,15 @@
 import React from 'react';
 import { Calendar, Clock, GitBranch } from 'lucide-react';
 
+const ACCENT_MAP = {
+  mint: { solid: '#2dd4bf', subtle: 'rgba(45, 212, 191, 0.16)', border: 'rgba(45, 212, 191, 0.45)' },
+  blue: { solid: '#3b82f6', subtle: 'rgba(59, 130, 246, 0.16)', border: 'rgba(59, 130, 246, 0.45)' },
+  amber: { solid: '#f59e0b', subtle: 'rgba(245, 158, 11, 0.16)', border: 'rgba(245, 158, 11, 0.45)' },
+  yellow: { solid: '#eab308', subtle: 'rgba(234, 179, 8, 0.16)', border: 'rgba(234, 179, 8, 0.45)' },
+  pink: { solid: '#ec4899', subtle: 'rgba(236, 72, 153, 0.16)', border: 'rgba(236, 72, 153, 0.45)' },
+};
+const DEFAULT_ACCENT = { solid: 'var(--orange-primary)', subtle: 'var(--orange-subtle)', border: 'var(--orange-border)' };
+
 export default function ProjectCard({ project }) {
   const getStatusBadge = (status) => {
     switch (status) {
@@ -25,6 +34,7 @@ export default function ProjectCard({ project }) {
   };
 
   const statusInfo = getStatusBadge(project.status);
+  const accent = ACCENT_MAP[project.color] || DEFAULT_ACCENT;
 
   return (
     <div
@@ -34,13 +44,13 @@ export default function ProjectCard({ project }) {
         justifyContent: 'space-between',
         display: 'flex',
         flexDirection: 'column',
-        borderLeft: '4px solid var(--orange-primary)'
+        borderLeft: `4px solid ${accent.solid}`
       }}
     >
       {/* Header: Code & Status */}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', color: 'var(--orange-bright)', background: 'var(--orange-subtle)', border: '1px solid var(--orange-border)', padding: '4px 14px', borderRadius: '6px', fontWeight: 800 }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', color: accent.solid, background: accent.subtle, border: `1px solid ${accent.border}`, padding: '4px 14px', borderRadius: '6px', fontWeight: 800 }}>
             #{project.code}
           </span>
           <span className={`status-badge ${statusInfo.className}`} style={{ fontSize: '1.15rem', padding: '6px 16px' }}>
@@ -56,7 +66,7 @@ export default function ProjectCard({ project }) {
 
         {/* Version Badge */}
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', padding: '6px 14px', borderRadius: '8px', fontSize: '1.22rem', fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', marginBottom: '14px' }}>
-          <GitBranch size={20} color="var(--orange-primary)" />
+          <GitBranch size={20} color={accent.solid} />
           <span>Versión {project.version}</span>
         </div>
       </div>

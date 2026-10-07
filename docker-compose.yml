@@ -8,3 +8,12 @@ services:
       - "8096:80"
       - "8443:443"
     restart: always
+    depends_on:
+      - fantasmometro-api
+
+  fantasmometro-api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: fantasmometro-api
+    restart: always
