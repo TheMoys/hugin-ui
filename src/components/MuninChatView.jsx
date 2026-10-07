@@ -36,7 +36,21 @@ export default function MuninChatView({
 
   // Multi-tenancy context
   const [userId] = useState('diego');
-  const [workspaceId, setWorkspaceId] = useState('fenix');
+  const [workspaceId, setWorkspaceId] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('munin_active_workspace') || 'fenix';
+    }
+    return 'fenix';
+  });
+
+  const handleWorkspaceChange = (newWs) => {
+    if (newWs === workspaceId) return;
+    setWorkspaceId(newWs);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('munin_active_workspace', newWs);
+    }
+    setMessages([]);
+  };
 
   const messagesEndRef = useRef(null);
   const mediaRecorderRef = useRef(null);
@@ -414,7 +428,12 @@ export default function MuninChatView({
     }
   };
 
-  const quickPrompts = [
+  const quickPrompts = workspaceId === 'personal' ? [
+    { label: '📋 Mis pendientes', text: '¿Cuáles son mis tareas y recordatorios personales pendientes?' },
+    { label: '⏰ Crear recordatorio', text: 'Recuérdame hoy a las 20:00 desconectar y hacer ejercicio.' },
+    { label: '🗓️ Mi agenda hoy', text: '¿Qué eventos y compromisos tengo programados para hoy?' },
+    { label: '💡 Nota rápida', text: 'Apunta como tarea pendiente comprar café y revisar el seguro.' }
+  ] : [
     { label: '🎯 Sprint Goal', text: '¿Cuál es el objetivo y los entregables del Sprint actual?' },
     { label: '⏳ Próximo Review', text: '¿Cuándo es el próximo Sprint Review y cuánto tiempo falta?' },
     { label: '🚍 Autobús TUS', text: '¿Cuáles son las próximas salidas de bus en las paradas 454 y 488?' },
@@ -542,11 +561,11 @@ export default function MuninChatView({
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
-            background: 'var(--orange-subtle)',
-            border: '1px solid var(--orange-border)',
+            background: workspaceId === 'personal' ? 'rgba(139, 92, 246, 0.15)' : 'var(--orange-subtle)',
+            border: `1px solid ${workspaceId === 'personal' ? 'rgba(139, 92, 246, 0.3)' : 'var(--orange-border)'}`,
             borderRadius: '10px',
             padding: '8px',
-            color: 'var(--orange-primary)',
+            color: workspaceId === 'personal' ? '#a78bfa' : 'var(--orange-primary)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
@@ -556,7 +575,7 @@ export default function MuninChatView({
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <h2 style={{ fontSize: '1.15rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0 }}>
-                MUNIN COPILOT
+                {workspaceId === 'personal' ? 'JARVIS PERSONAL' : 'MUNIN COPILOT'}
               </h2>
               <span style={{
                 fontSize: '0.75rem',
@@ -571,43 +590,70 @@ export default function MuninChatView({
               </span>
             </div>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-              Asistente Jarvis • Multi-Tenant • Padmasana Orchestrator
+              {workspaceId === 'personal' 
+                ? 'Asistente Jarvis • Vida Privada & Hábitos • Espacio Personal' 
+                : 'Copiloto Ejecutivo • Sprint & Padmasana • Dashboard TV'}
             </div>
           </div>
         </div>
 
         {/* Controles de cabecera */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {/* Selector de Workspace */}
+          {/* Selector 1-Touch: Fénix vs Personal */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
             background: 'var(--bg-inner)',
             border: '1px solid var(--border-subtle)',
-            borderRadius: '8px',
-            padding: '4px 10px',
-            fontSize: '0.82rem',
-            color: 'var(--text-secondary)'
+            borderRadius: '10px',
+            padding: '3px',
+            gap: '4px'
           }}>
-            <Briefcase size={14} color="var(--orange-primary)" />
-            <select
-              value={workspaceId}
-              onChange={e => setWorkspaceId(e.target.value)}
+            <button
+              type="button"
+              onClick={() => handleWorkspaceChange('fenix')}
+              title="Modo Fénix: Trabajo, Team Lead, Padmasana y TV Dashboard"
               style={{
-                background: 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '5px 12px',
+                borderRadius: '7px',
                 border: 'none',
-                color: 'var(--text-primary)',
-                fontSize: '0.82rem',
-                fontWeight: 700,
-                outline: 'none',
-                cursor: 'pointer'
+                background: workspaceId === 'fenix' ? 'linear-gradient(135deg, #f97316, #ea580c)' : 'transparent',
+                color: workspaceId === 'fenix' ? '#ffffff' : 'var(--text-muted)',
+                fontWeight: workspaceId === 'fenix' ? 800 : 500,
+                fontSize: '0.8rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: workspaceId === 'fenix' ? '0 2px 8px rgba(249, 115, 22, 0.35)' : 'none'
               }}
             >
-              <option value="fenix" style={{ background: '#101827', color: '#fff' }}>Workspace Fénix</option>
-              <option value="nutrix" style={{ background: '#101827', color: '#fff' }}>Workspace Nutrix</option>
-              <option value="mahine" style={{ background: '#101827', color: '#fff' }}>Workspace Mahine</option>
-            </select>
+              <Briefcase size={13} />
+              <span>Fénix Work</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleWorkspaceChange('personal')}
+              title="Modo Personal: Jarvis, vida cotidiana, tareas del hogar y bienestar"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '5px 12px',
+                borderRadius: '7px',
+                border: 'none',
+                background: workspaceId === 'personal' ? 'linear-gradient(135deg, #8b5cf6, #7c3aed)' : 'transparent',
+                color: workspaceId === 'personal' ? '#ffffff' : 'var(--text-muted)',
+                fontWeight: workspaceId === 'personal' ? 800 : 500,
+                fontSize: '0.8rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: workspaceId === 'personal' ? '0 2px 8px rgba(139, 92, 246, 0.35)' : 'none'
+              }}
+            >
+              <span>🏠 Personal</span>
+            </button>
           </div>
 
           {/* Botón estado de micrófono */}
@@ -694,21 +740,23 @@ export default function MuninChatView({
               width: '64px',
               height: '64px',
               borderRadius: '50%',
-              background: 'var(--orange-subtle)',
-              border: '1px solid var(--orange-border)',
+              background: workspaceId === 'personal' ? 'rgba(139, 92, 246, 0.15)' : 'var(--orange-subtle)',
+              border: `1px solid ${workspaceId === 'personal' ? 'rgba(139, 92, 246, 0.3)' : 'var(--orange-border)'}`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               margin: '0 auto 16px',
-              color: 'var(--orange-primary)'
+              color: workspaceId === 'personal' ? '#a78bfa' : 'var(--orange-primary)'
             }}>
               <MessageSquare size={32} />
             </div>
             <h3 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', marginBottom: '8px', fontWeight: 800 }}>
-              Hola Diego, soy Munin
+              {workspaceId === 'personal' ? 'Hola Diego, soy Jarvis' : 'Hola Diego, soy Munin'}
             </h3>
             <p style={{ fontSize: '0.9rem', lineHeight: 1.5, marginBottom: '20px' }}>
-              Tu orquestador Jarvis. Puedes dictar por voz usando el modo <strong>Walkie-Talkie</strong> o escribir directamente.
+              {workspaceId === 'personal' 
+                ? 'Tu asistente y mayordomo personal. Gestionemos tus recados, compras, hábitos, citas o recordatorios de forma privada.' 
+                : 'Tu copiloto ejecutivo para el equipo Fénix. Puedes dictar por voz usando Walkie-Talkie o escribir directamente.'}
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', textAlign: 'left' }}>
@@ -728,10 +776,10 @@ export default function MuninChatView({
                     transition: 'border-color 0.2s',
                     lineHeight: 1.3
                   }}
-                  onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--orange-primary)'}
+                  onMouseEnter={e => e.currentTarget.style.borderColor = workspaceId === 'personal' ? '#8b5cf6' : 'var(--orange-primary)'}
                   onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-subtle)'}
                 >
-                  <strong style={{ color: 'var(--orange-primary)', display: 'block', marginBottom: '3px' }}>{p.label}</strong>
+                  <strong style={{ color: workspaceId === 'personal' ? '#a78bfa' : 'var(--orange-primary)', display: 'block', marginBottom: '3px' }}>{p.label}</strong>
                   <span style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>{p.text}</span>
                 </button>
               ))}
@@ -754,7 +802,7 @@ export default function MuninChatView({
                 }}
               >
                 <div style={{
-                  background: isUser ? 'var(--orange-primary)' : 'var(--bg-inner)',
+                  background: isUser ? (workspaceId === 'personal' ? 'linear-gradient(135deg, #8b5cf6, #7c3aed)' : 'var(--orange-primary)') : 'var(--bg-inner)',
                   color: isUser ? '#ffffff' : 'var(--text-primary)',
                   padding: '12px 16px',
                   borderRadius: isUser ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
@@ -952,9 +1000,15 @@ export default function MuninChatView({
             width: '46px',
             height: '46px',
             borderRadius: '50%',
-            background: isRecording ? '#ef4444' : 'var(--orange-subtle)',
-            border: `2px solid ${isRecording ? '#ef4444' : 'var(--orange-border)'}`,
-            color: isRecording ? '#ffffff' : 'var(--orange-primary)',
+            background: isRecording 
+              ? '#ef4444' 
+              : (workspaceId === 'personal' ? 'rgba(139, 92, 246, 0.15)' : 'var(--orange-subtle)'),
+            border: `2px solid ${isRecording 
+              ? '#ef4444' 
+              : (workspaceId === 'personal' ? 'rgba(139, 92, 246, 0.4)' : 'var(--orange-border)')}`,
+            color: isRecording 
+              ? '#ffffff' 
+              : (workspaceId === 'personal' ? '#a78bfa' : 'var(--orange-primary)'),
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -978,7 +1032,7 @@ export default function MuninChatView({
               handleSendMessage();
             }
           }}
-          placeholder={isRecording ? "🔴 Grabando... pulsa el botón rojo para enviar" : "Escribe un mensaje o pulsa el micro para hablar..."}
+          placeholder={isRecording ? "🔴 Grabando... pulsa el botón rojo para enviar" : (workspaceId === 'personal' ? "Escribe a Jarvis o pulsa el micro..." : "Escribe a Munin o pulsa el micro...")}
           disabled={isProcessing || isRecording}
           style={{
             flex: 1,
@@ -998,7 +1052,9 @@ export default function MuninChatView({
           onClick={() => handleSendMessage()}
           disabled={!inputText.trim() || isProcessing || isRecording}
           style={{
-            background: inputText.trim() && !isProcessing ? 'var(--orange-primary)' : 'rgba(255, 255, 255, 0.05)',
+            background: inputText.trim() && !isProcessing 
+              ? (workspaceId === 'personal' ? 'linear-gradient(135deg, #8b5cf6, #7c3aed)' : 'var(--orange-primary)') 
+              : 'rgba(255, 255, 255, 0.05)',
             color: inputText.trim() && !isProcessing ? '#ffffff' : 'var(--text-muted)',
             border: 'none',
             borderRadius: '12px',
@@ -1008,7 +1064,10 @@ export default function MuninChatView({
             alignItems: 'center',
             justifyContent: 'center',
             transition: 'all 0.2s ease',
-            fontWeight: 700
+            fontWeight: 700,
+            boxShadow: inputText.trim() && !isProcessing 
+              ? (workspaceId === 'personal' ? '0 4px 12px rgba(139, 92, 246, 0.35)' : '0 4px 12px rgba(249, 115, 22, 0.35)') 
+              : 'none'
           }}
         >
           <Send size={18} />
