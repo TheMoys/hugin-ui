@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Flame, LayoutGrid, Activity, Monitor, Clock } from 'lucide-react';
 import FenixPlanning from './components/FenixPlanning';
 import ProjectsBoard from './components/ProjectsBoard';
+import Fantasmometro from './components/Fantasmometro';
 import { INITIAL_PROJECTS } from './data/initialData';
 
 export default function App() {
@@ -112,6 +113,8 @@ export default function App() {
             <ProjectsBoard projects={projects} />
           )}
         </main>
+
+        <Fantasmometro />
       </div>
     </div>
   );

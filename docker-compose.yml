@@ -7,3 +7,12 @@ services:
     ports:
       - "8096:80"
     restart: always
+    depends_on:
+      - fantasmometro-api
+
+  fantasmometro-api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: fantasmometro-api
+    restart: always

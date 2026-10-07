@@ -10,6 +10,12 @@ export default defineConfig({
         target: 'https://datos.santander.es',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api-tus/, '')
+      },
+      '/api-fantasmometro': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+        ws: false,
+        rewrite: (path) => path.replace(/^\/api-fantasmometro/, '')
       }
     }
   }
