@@ -145,8 +145,19 @@ export default function FenixPlanning({ review = INITIAL_REVIEW, sprintGoal = IN
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {sprintGoal.deliverables && sprintGoal.deliverables.length > 0 ? (
               sprintGoal.deliverables.map((item) => (
-                <div key={item.id} style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', padding: '10px 14px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.02rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                  <CheckCircle2 size={18} color="#4ade80" />
+                <div key={item.id} style={{ 
+                  background: (item.tag === 'NUTRIX' || item.tag === 'MLS') ? 'rgba(168, 85, 247, 0.2)' : 'var(--bg-inner)', 
+                  border: (item.tag === 'NUTRIX' || item.tag === 'MLS') ? '1px solid #c084fc' : '1px solid var(--border-subtle)', 
+                  padding: '10px 14px', 
+                  borderRadius: '8px', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '10px', 
+                  fontSize: '1.02rem', 
+                  fontWeight: 600, 
+                  color: (item.tag === 'NUTRIX' || item.tag === 'MLS') ? '#c084fc' : 'var(--text-primary)' 
+                }}>
+                  <CheckCircle2 size={18} color={(item.tag === 'NUTRIX' || item.tag === 'MLS') ? '#c084fc' : '#4ade80'} />
                   <span><strong>{item.tag}:</strong> {item.title}</span>
                 </div>
               ))

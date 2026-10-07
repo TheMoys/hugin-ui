@@ -40,7 +40,16 @@ export default function ProjectCard({ project }) {
       {/* Header: Code & Status */}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', color: 'var(--orange-bright)', background: 'var(--orange-subtle)', border: '1px solid var(--orange-border)', padding: '4px 14px', borderRadius: '6px', fontWeight: 800 }}>
+          <span style={{ 
+            fontFamily: 'var(--font-mono)', 
+            fontSize: '1.25rem', 
+            color: (project.code === 'NUTRIX' || project.code === 'MLS') ? '#c084fc' : 'var(--orange-bright)', 
+            background: (project.code === 'NUTRIX' || project.code === 'MLS') ? 'rgba(168, 85, 247, 0.2)' : 'var(--orange-subtle)', 
+            border: (project.code === 'NUTRIX' || project.code === 'MLS') ? '1px solid #c084fc' : '1px solid var(--orange-border)', 
+            padding: '4px 14px', 
+            borderRadius: '6px', 
+            fontWeight: 800 
+          }}>
             #{project.code}
           </span>
           <span className={`status-badge ${statusInfo.className}`} style={{ fontSize: '1.15rem', padding: '6px 16px' }}>
