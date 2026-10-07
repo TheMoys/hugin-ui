@@ -431,11 +431,15 @@ export default function MuninChatView({
   const quickPrompts = workspaceId === 'personal' ? [
     { label: '📋 Mis pendientes', text: '¿Cuáles son mis tareas y recordatorios personales pendientes?' },
     { label: '⏰ Crear recordatorio', text: 'Recuérdame hoy a las 20:00 desconectar y hacer ejercicio.' },
+    { label: '💻 Salud de mi PC', text: '¿Cómo están los recursos y la memoria de mi ordenador?' },
+    { label: '🔒 Bloquear PC', text: 'Bloquea la pantalla de mi ordenador.' },
     { label: '🗓️ Mi agenda hoy', text: '¿Qué eventos y compromisos tengo programados para hoy?' },
     { label: '💡 Nota rápida', text: 'Apunta como tarea pendiente comprar café y revisar el seguro.' }
   ] : [
     { label: '🎯 Sprint Goal', text: '¿Cuál es el objetivo y los entregables del Sprint actual?' },
     { label: '⏳ Próximo Review', text: '¿Cuándo es el próximo Sprint Review y cuánto tiempo falta?' },
+    { label: '🐳 Docker & PC', text: '¿Qué contenedores Docker están activos y cómo está la RAM de mi PC?' },
+    { label: '🌿 Git en Fénix', text: '¿Cuál es el estado de la rama actual en Mahine y Nutrix?' },
     { label: '🚍 Autobús TUS', text: '¿Cuáles son las próximas salidas de bus en las paradas 454 y 488?' },
     { label: '⚡ Ticket Padmasana', text: 'Redacta una historia de usuario para Padmasana dividida en Backend y Frontend.' }
   ];
