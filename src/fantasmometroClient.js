@@ -1,6 +1,6 @@
 const API_BASE = '/api-fantasmometro';
 
-export const FANTASMOMETRO_NAMES = ['Carlos', 'Mariam', 'Moys', 'Pipe', 'William', 'Gael'];
+export const FANTASMOMETRO_NAMES = ['Carlos', 'Mariam', 'Moys', 'Pipe', 'William', 'Gael', 'Rodrigo'];
 
 export const FANTASMOMETRO_COLORS = {
   Carlos: '#38bdf8',
@@ -9,6 +9,7 @@ export const FANTASMOMETRO_COLORS = {
   Pipe: '#34d399',
   William: '#a78bfa',
   Gael: '#ee941d9a',
+  Rodrigo: '#4dff00ff',
 };
 
 export async function fetchFantasmometroState() {
