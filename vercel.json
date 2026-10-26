@@ -1,0 +1,21 @@
+{
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/api-fantasmometro/value",
+      "destination": "/api/fantasmometro/value"
+    },
+    {
+      "source": "/api-fantasmometro/events",
+      "destination": "/api/fantasmometro/events"
+    },
+    {
+      "source": "/api-tus/(.*)",
+      "destination": "https://datos.santander.es/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

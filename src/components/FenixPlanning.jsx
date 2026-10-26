@@ -123,7 +123,7 @@ export default function FenixPlanning({ review = INITIAL_REVIEW, sprintGoal = IN
         </div>
       </div>
 
-      {/* COLUMN 2: Objetivo del Sprint & Entregables Clave */}
+      {/* COLUMN 2: Tablero de Sprint & Entregables Clave */}
       <div className="dash-card" style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '18px 20px', borderLeft: '4px solid var(--orange-primary)' }}>
         <div>
           {/* Header */}
@@ -133,43 +133,65 @@ export default function FenixPlanning({ review = INITIAL_REVIEW, sprintGoal = IN
                 <Target size={24} />
               </div>
               <div>
-                <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--orange-primary)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                  INICIATIVA CLAVE
+                <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--orange-primary)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                  SPRINT EN CURSO
                 </span>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0 0 0' }}>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0 0 0' }}>
                   {sprintGoal.title}
                 </h3>
               </div>
             </div>
-            <span style={{ background: 'var(--orange-subtle)', color: 'var(--orange-primary)', border: '1px solid var(--orange-border)', fontWeight: 800, fontSize: '0.95rem', padding: '5px 12px', borderRadius: '6px', fontFamily: 'var(--font-mono)' }}>
-              {sprintGoal.code}
+            <span style={{ background: 'var(--orange-subtle)', color: 'var(--orange-primary)', border: '1px solid var(--orange-border)', fontWeight: 800, fontSize: '0.9rem', padding: '5px 12px', borderRadius: '6px', fontFamily: 'var(--font-mono)' }}>
+              {sprintGoal.code || 'PADMASANA'}
             </span>
           </div>
 
-          {/* Quote Block */}
-          <div style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', borderLeft: '4px solid var(--orange-primary)', padding: '16px 18px', borderRadius: '10px', marginBottom: '14px' }}>
-            <p style={{ fontSize: '1.2rem', color: 'var(--text-primary)', lineHeight: 1.5, fontWeight: 600, margin: 0 }}>
-              "{sprintGoal.description}"
-            </p>
-          </div>
+          {/* Quote Block solo si hay descripción real no vacía y no redundante */}
+          {sprintGoal.description && sprintGoal.description.trim() !== '' && sprintGoal.description !== sprintGoal.title && !sprintGoal.description.toLowerCase().startsWith('sprint activo:') && (
+            <div style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', borderLeft: '4px solid var(--orange-primary)', padding: '12px 16px', borderRadius: '10px', marginBottom: '14px' }}>
+              <p style={{ fontSize: '1.1rem', color: 'var(--text-primary)', lineHeight: 1.4, fontWeight: 600, margin: 0 }}>
+                "{sprintGoal.description}"
+              </p>
+            </div>
+          )}
 
           {/* Entregables List */}
-          <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-            Entregables Clave del Sprint:
+          <div style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', fontWeight: 700, marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>Tareas del Sprint:</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{sprintGoal.deliverables?.length || 0} tareas</span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {sprintGoal.deliverables && sprintGoal.deliverables.length > 0 ? (
               sprintGoal.deliverables.map((item) => (
-                <div key={item.id} style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', padding: '10px 14px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.02rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                  <CheckCircle2 size={18} color="#4ade80" />
-                  <span><strong>{item.tag}:</strong> {item.title}</span>
+                <div key={item.id} style={{
+                  background: 'var(--bg-inner)',
+                  border: '1px solid var(--border-subtle)',
+                  borderLeft: item.status === 'doing' ? '3px solid #38bdf8' : '3px solid #64748b',
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  fontSize: '1.02rem',
+                  fontWeight: 600,
+                  color: 'var(--text-primary)'
+                }}>
+                  <CheckCircle2 size={18} color={item.status === 'doing' ? '#38bdf8' : '#4ade80'} />
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', overflow: 'hidden' }}>
+                    <strong style={{ color: item.status === 'doing' ? '#38bdf8' : 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+                      {item.tag}:
+                    </strong>
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {item.title}
+                    </span>
+                  </span>
                 </div>
               ))
             ) : (
               <div style={{ background: 'var(--bg-inner)', border: '1px solid var(--border-subtle)', padding: '10px 14px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.02rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                 <CheckCircle2 size={18} color="#4ade80" />
-                <span>Sprint Goal actualizado</span>
+                <span>Sprint sincronizado con Padmasana</span>
               </div>
             )}
           </div>

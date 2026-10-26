@@ -22,14 +22,17 @@ export const INITIAL_REVIEW = {
 
 export const INITIAL_SPRINT_GOAL = {
   id: 'sprint-goal-1',
-  code: 'SPRINT-ACTUAL',
-  title: 'Objetivo del Sprint',
-  description: 'Resolver incidencias de la plataforma MLS, levantar el nuevo módulo de historial dietético en el backend, diseñar los mockups de historial dietético y clínico, y avanzar con el Entregable #7 de Residencia Nuevo.',
+  code: 'PADMASANA',
+  title: 'Sprint 16 de Octubre al 29 de Octubre',
+  description: '',
   deliverables: [
-    { id: 'del-1', tag: 'MLS', title: 'Resolución de incidencias de la plataforma' },
-    { id: 'del-2', tag: 'NUTRIX Backend', title: 'Módulo de Historial Dietético' },
-    { id: 'del-3', tag: 'Diseño / UI', title: 'Mockups de Historial Dietético y Clínico' },
-    { id: 'del-4', tag: 'Residencia Nuevo', title: 'Entregable #7' },
+    { id: 'del-1', tag: '⚡ LUIS', title: '(8) [FE] Configurar asistente y botón de ayuda', status: 'doing' },
+    { id: 'del-2', tag: '⚡ CARLOS', title: '(5) Registro de trabajo recurrente SysAdmin', status: 'doing' },
+    { id: 'del-3', tag: '⚡ LUIS', title: '(3) [FE] Panel de cobertura temática', status: 'doing' },
+    { id: 'del-4', tag: '⚡ WILLIAM', title: '(3) [BE] Procesar categorías clínicas y nutricionales', status: 'doing' },
+    { id: 'del-5', tag: '📋 FERNANDA', title: '(5) Especificaciones de requerimientos (Entregable #7)', status: 'todo' },
+    { id: 'del-6', tag: '📋 FERNANDA', title: '(2) [FE] Identificar sesiones por usuario y fecha', status: 'todo' },
+    { id: 'del-7', tag: '📋 FERNANDA', title: '(5) [FE] Persistencia de encuesta inicial', status: 'todo' },
   ]
 };
 
