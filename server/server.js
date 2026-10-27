@@ -2,7 +2,7 @@ import { createServer } from 'node:http';
 
 const PORT = process.env.PORT || 4000;
 
-const NAMES = ['Carlos', 'Mariam', 'Moys', 'Pipe', 'William', 'Gael', 'Rodrigo'];
+const NAMES = ['Carlos', 'Mariam', 'Moys', 'Pipe', 'William', 'Gael', 'Rodrigo', 'Jose'];
 
 let contributions = Object.fromEntries(NAMES.map((n) => [n, 0]));
 const clients = new Set();
