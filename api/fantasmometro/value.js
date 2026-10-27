@@ -1,4 +1,4 @@
-const NAMES = ['Carlos', 'Mariam', 'Moys', 'Pipe', 'William', 'Gael', 'Rodrigo', 'Jose'];
+const NAMES = ['Carlos', 'Mariam', 'Moys', 'Pipe', 'William', 'Gael', 'Rodrigo', 'Jose', 'Daniel'];
 
 let contributions = Object.fromEntries(NAMES.map((n) => [n, 0]));
 
